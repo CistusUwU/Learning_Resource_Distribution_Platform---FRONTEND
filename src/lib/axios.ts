@@ -40,10 +40,11 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      TokenManager.clear()
-      if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+        TokenManager.clear()
         window.location.href = '/login'
       }
+      
     }
     return Promise.reject(error)
   }

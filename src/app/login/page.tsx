@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from "@/providers/AuthProvider";
+import { useAuth } from "@/providers/auth-provider";
 import { useRouter } from "next/navigation"
 import { FormEvent, useState } from "react";
 import type { LoginPayLoad, LoginTab } from "@/types/login.type";

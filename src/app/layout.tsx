@@ -1,5 +1,5 @@
-import { AuthProvider } from '@/providers/AuthProvider'
-import { ThemeProvider } from '@/providers/ThemeProvider'
+import { AuthProvider } from '@/providers/auth-provider'
+import { ThemeProvider } from '@/providers/theme-provider'
 import localFont from 'next/font/local'
 import type { Metadata } from 'next'
 import './globals.css'

@@ -4,6 +4,7 @@ import { useAuth } from "@/providers/auth-provider";
 import { useRouter } from "next/navigation"
 import { FormEvent, useState } from "react";
 import type { LoginPayLoad, LoginTab } from "@/types/login.type";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function LoginPage() {
     const router = useRouter()
@@ -96,6 +97,10 @@ export default function LoginPage() {
           {/* Right Side */}
           <div className="w-full lg:w-5/12 flex flex-col items-center justify-center p-8 lg:p-16 bg-white dark:bg-slate-800">
     
+          <div className="absolute top-6 right-6">
+              <ThemeToggle />
+          </div>
+
             {/* Mobile logo */}
             <div className="lg:hidden self-start mb-10 flex items-center gap-2">
               <div className="bg-blue-600 p-2 rounded-lg">

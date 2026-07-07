@@ -1,29 +1,40 @@
 'use client'
 
-import { useEffect } from "react"
-import type { ReactNode } from "react"
-import { useRouter } from 'next/navigation'
 import { useAuth } from "@/providers/auth-provider";
+import { usePathname, useRouter } from 'next/navigation'
+import { ReactNode, useEffect, useState } from "react";
+import { studentNavItems } from "../app-sidebar/student-nav-items";
 import Link from "next/link";
 import { AppSidebar } from "../app-sidebar/app-sidebar";
-import { staffNavItems } from "../app-sidebar/staff-nav-items";
-import { adminNavItems } from "../app-sidebar/admin-nav-items";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { HeaderNotifications } from "@/components/student/header-notifications";
+import { ordersService } from "@/services/orders.service";
 
-
-export default function StaffShell({ children }: { children: ReactNode }) {
+export default function StudentShell({ children }: { children: ReactNode}) {
     const router = useRouter()
     const { user, isAuthenticated, loading, logout } = useAuth()
+    const pathname = usePathname()
+    const [pendingCount, setPendingCount] = useState(0)
+
+    useEffect(() => {
+        ordersService.getMyOrders()
+            .then((orders) => {
+                const pending = orders.filter((o) => o.status === 'PENDING')
+                setPendingCount(pending.length)
+            })
+            .catch(() => setPendingCount(0))
+    }, [pathname])
 
     useEffect(() => {
         if (loading) return
-        if (!isAuthenticated || (user?.role !== 'STAFF' && user?.role !== 'ADMIN')) {
+        if (!isAuthenticated || user?.role !== 'STUDENT') {
             router.push('/login')
         }
     }, [loading, isAuthenticated, user, router])
-    
+
     const initials = (name: string) =>
         name.split(' ').filter(Boolean).map((n) => n[0]).join('').slice(0, 2).toUpperCase()
+
     if (loading || !user) {
         return (
             <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
@@ -34,12 +45,17 @@ export default function StaffShell({ children }: { children: ReactNode }) {
             </div>
         )
     }
-    const navItems = user.role === 'ADMIN' ? adminNavItems : staffNavItems
+
+    const navItemsWithBadge = studentNavItems.map((item) =>
+        item.path === '/student/purchase-history' && pendingCount > 0
+        ? {...item, badge: pendingCount }
+        : item
+    )
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 flex flex-col">
             <header className="h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-6 sticky top-0 z-40 shadow-sm">
-                <Link href="/staff" className="flex items-center gap-2 rounded-lg">
+                <Link href="/student" className="flex items-center gap-2 rounded-lg">
                     <div className="bg-blue-600 p-2 rounded-xl shadow-lg shadow-blue-500/20">
                         <svg className="text-white w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -47,13 +63,23 @@ export default function StaffShell({ children }: { children: ReactNode }) {
                     </div>
                     <span className="font-bold text-xl tracking-tight text-slate-900 dark:text-slate-200">
                         MedEd <span className="text-blue-600">Hub</span>
-                        <span className="ml-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Cán bộ</span>
+                        <span className="ml-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Sinh viên</span>
                     </span>
                 </Link>
 
                 <div className="flex items-center gap-2 md:gap-3">
+                    <HeaderNotifications />
+                    <Link
+                        href="/cart"
+                        className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full text-slate-600 dark:text-slate-400 transition-colors"
+                        title="Giỏ hàng"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </Link>
                     <ThemeToggle />
-                    <div className="flex items-center gap-3 bg-white dark:bg-slate-800 p-1 pr-3 rounded-full border border-slate-200 dark:border-slate-600">                                
+                    <div className="flex items-center gap-3 bg-white dark:bg-slate-800 p-1 pr-3 rounded-full border border-slate-200 dark:border-slate-600">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-extrabold">
                             {initials(user.full_name)}
                         </div>
@@ -77,7 +103,7 @@ export default function StaffShell({ children }: { children: ReactNode }) {
 
             <div className="flex flex-1 overflow-hidden">
                 <aside className="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700">
-                    <AppSidebar navItems={navItems} />
+                    <AppSidebar navItems={navItemsWithBadge} />
                 </aside>
                 <main className="flex-1 overflow-y-auto bg-white dark:bg-slate-900">
                     <div className="px-10 py-10">{children}</div>

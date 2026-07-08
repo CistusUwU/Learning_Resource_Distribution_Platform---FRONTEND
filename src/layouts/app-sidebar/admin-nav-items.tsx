@@ -1,5 +1,6 @@
+import { staffNavItems } from "@/layouts/app-sidebar/staff-nav-items";
 import type { NavItem } from "@/types/nav.type";
-import { staffNavItems } from "./staff-nav-items";
+
 
 
 

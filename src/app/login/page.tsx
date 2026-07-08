@@ -1,10 +1,11 @@
 'use client'
 
-import { useAuth } from "@/providers/auth-provider";
+import { useAuth } from "@providers/auth-provider";
 import { useRouter } from "next/navigation"
 import { FormEvent, useState } from "react";
-import type { LoginPayLoad, LoginTab } from "@/types/login.type";
-import { ThemeToggle } from "@/components/theme-toggle";
+
+import { LoginPayLoad, LoginTab } from "@app-types/login.type";
+import { ThemeToggle } from "@components/theme-toggle";
 
 export default function LoginPage() {
     const router = useRouter()

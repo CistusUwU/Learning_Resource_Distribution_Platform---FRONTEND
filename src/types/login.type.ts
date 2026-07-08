@@ -1,4 +1,4 @@
-import { UserRole } from "@/types/role.type"
+import { UserRole } from "@app-types/role.type"
 
 
 export type LoginTab = 'STUDENT' | 'STAFF'

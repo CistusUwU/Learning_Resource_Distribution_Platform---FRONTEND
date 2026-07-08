@@ -3,12 +3,13 @@
 import { useEffect } from "react"
 import type { ReactNode } from "react"
 import { useRouter } from 'next/navigation'
-import { useAuth } from "@/providers/auth-provider";
+import { useAuth } from "@providers/auth-provider";
 import Link from "next/link";
-import { AppSidebar } from "@/layouts/app-sidebar/app-sidebar";
-import { staffNavItems } from "@/layouts/app-sidebar/staff-nav-items";
-import { adminNavItems } from "@/layouts/app-sidebar/admin-nav-items";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { AppSidebar } from "@layouts/app-sidebar/app-sidebar";
+import { staffNavItems } from "@layouts/app-sidebar/staff-nav-items";
+import { adminNavItems } from "@layouts/app-sidebar/admin-nav-items";
+import { ThemeToggle } from "@components/theme-toggle";
+
 
 
 export default function StaffShell({ children }: { children: ReactNode }) {

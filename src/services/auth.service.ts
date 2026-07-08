@@ -1,5 +1,5 @@
-import axiosInstance from "@/lib/axios"
-import type { LoginPayLoad, LoginResponse, UserInfo } from "@/types/login.type"
+import axiosInstance from "@lib/axios"
+import type { LoginPayLoad, LoginResponse, UserInfo } from "@app-types/login.type"
 
 export class AuthService {
     async login(payload: LoginPayLoad): Promise<LoginResponse> {

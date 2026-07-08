@@ -1,5 +1,5 @@
-import axiosInstance from "@/lib/axios";
-import type { StaffBook } from "@/types/book.type";
+import axiosInstance from "@lib/axios";
+import type { StaffBook } from "@app-types/book.type";
 
 export class StaffService {
     async getMyBooks(): Promise<StaffBook[]> {

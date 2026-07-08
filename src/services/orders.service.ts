@@ -1,5 +1,5 @@
-import axiosInstance from "@/lib/axios";
-import { Order } from "@/types/order.type";
+import axiosInstance from "@lib/axios";
+import { Order } from "@app-types/order.type";
 
 export class OrdersService {
     async getMyOrders(): Promise<Order[]>{

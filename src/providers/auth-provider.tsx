@@ -1,8 +1,8 @@
 'use client'
 
-import { TokenManager } from "@/lib/axios"
-import { authService } from "@/services/auth.service"
-import type { LoginPayLoad, UserInfo } from "@/types/login.type"
+import { TokenManager } from "@lib/axios"
+import { authService } from "@services/auth.service"
+import type { LoginPayLoad, UserInfo } from "@app-types/login.type"
 import { createContext, ReactNode, useCallback, useContext, useState, useEffect } from "react"
 
 interface AuthContextValue {

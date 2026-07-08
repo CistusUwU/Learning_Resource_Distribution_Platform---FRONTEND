@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import StudentShell from "@/layouts/student-shell/student-shell"
-import { PendingPaymentBanner } from "@/components/student/pending-payment-banner"
-import { useAuth } from "@/providers/auth-provider"
-import { libraryService } from "@/services/library.service"
+import StudentShell from "@layouts/student-shell/student-shell"
+import { PendingPaymentBanner } from "@components/student/pending-payment-banner"
+import { useAuth } from "@providers/auth-provider"
+import { libraryService } from "@services/library.service"
 
 export default function StudentDashboardPage() {
     const { user } = useAuth()

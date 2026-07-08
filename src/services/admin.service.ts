@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/axios";
+import axiosInstance from "@lib/axios";
 
 export class AdminService{
     async getPendingBooksCount(): Promise<number> {

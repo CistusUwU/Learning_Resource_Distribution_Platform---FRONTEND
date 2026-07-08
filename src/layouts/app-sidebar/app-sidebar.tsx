@@ -1,6 +1,6 @@
 'use client'
 
-import type { NavItem } from "@/types/nav.type"
+import type { NavItem } from "@app-types/nav.type"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import type { FC } from "react"

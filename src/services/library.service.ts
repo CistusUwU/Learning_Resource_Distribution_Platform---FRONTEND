@@ -1,5 +1,5 @@
-import axiosInstance from "@/lib/axios";
-import { LibraryItem } from "@/types/library.type";
+import axiosInstance from "@lib/axios";
+import { LibraryItem } from "@app-types/library.type";
 
 export class LibraryService {
     async getMyLibrary(): Promise<LibraryItem[]> {

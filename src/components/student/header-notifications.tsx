@@ -1,9 +1,9 @@
 'use client'
 
-import { ordersService } from "@/services/orders.service"
+import { ordersService } from "@services/orders.service"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
-import { NotificationItem, toNotification } from "@/utils/order"
+import { NotificationItem, toNotification } from "@utils/order"
 
 export function HeaderNotifications() {
     const [items, setItems] = useState<NotificationItem[]>([])

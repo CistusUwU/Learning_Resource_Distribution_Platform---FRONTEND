@@ -1,4 +1,4 @@
-import type { NavItem } from "@/types/nav.type"
+import type { NavItem } from "@app-types/nav.type"
 
 export const staffNavItems: NavItem[] = [
     {

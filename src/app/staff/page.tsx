@@ -1,9 +1,9 @@
 'use client'
 
-import { useAuth } from "@/providers/auth-provider";
-import { staffService } from "@/services/staff.service";
-import { adminService } from "@/services/admin.service"
-import type { StaffBook } from "@/types/book.type";
+import { useAuth } from "@providers/auth-provider";
+import { staffService } from "@services/staff.service";
+import { adminService } from "@services/admin.service"
+import type { StaffBook } from "@app-types/book.type";
 import { useEffect, useState } from "react";
 
 export default function StaffHomePage() {

@@ -1,8 +1,8 @@
 'use client'
 
-import { getCheckoutPath } from "@/utils/checkout"
-import { ordersService } from "@/services/orders.service"
-import { Order } from "@/types/order.type"
+import { getCheckoutPath } from "@utils/checkout"
+import { ordersService } from "@services/orders.service"
+import { Order } from "@app-types/order.type"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 

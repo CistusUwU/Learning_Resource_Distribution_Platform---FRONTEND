@@ -1,6 +1,7 @@
-import { Order } from "@/types/order.type"
-import { getCheckoutPath } from "./checkout"
-import { formatTime } from "./date"
+import { Order } from "@app-types/order.type"
+import { getCheckoutPath } from "@utils/checkout"
+
+import { formatTime } from "@utils/date"
 
 function formatOrderStatus(status: string): string {
     if (status === 'COMPLETED') return 'Đã thanh toán'

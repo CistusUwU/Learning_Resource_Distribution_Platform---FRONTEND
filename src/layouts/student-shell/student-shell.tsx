@@ -1,14 +1,14 @@
 'use client'
 
-import { useAuth } from "@/providers/auth-provider";
+import { useAuth } from "@providers/auth-provider";
 import { usePathname, useRouter } from 'next/navigation'
 import { ReactNode, useEffect, useState } from "react";
-import { studentNavItems } from "../app-sidebar/student-nav-items";
+import { studentNavItems } from "@layouts/app-sidebar/student-nav-items";
 import Link from "next/link";
-import { AppSidebar } from "../app-sidebar/app-sidebar";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { HeaderNotifications } from "@/components/student/header-notifications";
-import { ordersService } from "@/services/orders.service";
+import { AppSidebar } from "@layouts/app-sidebar/app-sidebar";
+import { ThemeToggle } from "@components/theme-toggle";
+import { HeaderNotifications } from "@components/student/header-notifications";
+import { ordersService } from "@services/orders.service";
 
 export default function StudentShell({ children }: { children: ReactNode}) {
     const router = useRouter()

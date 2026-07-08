@@ -18,9 +18,18 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@components/*": ["./src/components/*"],
+      "@layouts/*": ["./src/layouts/*"],
+      "@guard/*": ["./src/guard/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@providers/*": ["./src/providers/*"],
+      "@services/*": ["./src/services/*"],
+      "@store/*": ["./src/store/*"],
+      "@app-types/*": ["./src/types/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@app/*": ["./src/app/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/admin/transactions/.gitkeep", "src/app/api/payment/vnpay-ipn/.gitkeep", "src/app/api/payment/vnpay-return/.gitkeep", "src/app/api/staff/books/[id]/v/.gitkeep", "src/app/api/student/books/[id]/v/.gitkeep", "src/app/auth/callback/.gitkeep", "src/app/books/[id]/.gitkeep", "src/app/staff/admin/approvals/.gitkeep", "src/app/staff/admin/revenue/payouts/[id]/.gitkeep", "src/app/staff/admin/revenue/.gitkeep", "src/app/staff/admin/staff/.gitkeep", "src/app/staff/admin/tags/.gitkeep", "src/app/staff/admin/transactions/[id]/.gitkeep", "src/app/staff/admin/transactions/.gitkeep"],
   "exclude": ["node_modules"]
 }

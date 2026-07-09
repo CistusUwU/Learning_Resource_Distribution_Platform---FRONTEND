@@ -8,10 +8,5 @@ export interface LibraryItem {
         title: string
         cover_image: string | null
         price: string
-        book_author: {
-            lecturer: {
-                full_name: string
-            }
-        } []
     }
 }

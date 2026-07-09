@@ -19,8 +19,10 @@ export const AppSidebar: FC<AppSidebarProps> = ({
     const pathname = usePathname()
 
     const isActive = (path: string) => {
+        if (path === '/student') {
+            return pathname === '/student'
+        }
         if (pathname === path) return true
-        if (pathname === path + '/') return true
         return pathname?.startsWith(path + '/')
     }
     

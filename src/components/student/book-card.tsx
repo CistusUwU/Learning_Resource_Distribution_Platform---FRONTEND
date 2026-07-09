@@ -1,20 +1,9 @@
 import Link from 'next/link'
 import BookCover from '@components/book-cover'
 import type { LibraryItem } from '@app-types/library.type'
+import { formatDate } from '@utils/date'
 
-interface BookCardProps {
-  item: LibraryItem
-}
-
-export default function BookCard({ item }: BookCardProps) {
-  const purchasedDate = item.purchased_date
-    ? new Date(item.purchased_date).toLocaleDateString('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      })
-    : '—'
-
+export default function BookCard({ item }: { item: LibraryItem }) {
   return (
     <Link
       href={`/student/books/${item.book.book_id}/read`}
@@ -32,7 +21,7 @@ export default function BookCard({ item }: BookCardProps) {
           {item.book.title}
         </h3>
         <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
-          Mua {purchasedDate}
+          Mua {formatDate(item.purchased_date)}
         </p>
       </div>
     </Link>

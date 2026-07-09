@@ -4,13 +4,15 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { publicUploadUrl } from '@utils/public-url'
 
-interface BookCoverProps {
+export default function BookCover({
+  coverImage,
+  title,
+  className,
+}: {
   coverImage: string | null
   title: string
   className?: string
-}
-
-export default function BookCover({ coverImage, title, className }: BookCoverProps) {
+}) {
   const [hasError, setHasError] = useState(false)
   const src = publicUploadUrl(coverImage)
   const showFallback = !src || hasError

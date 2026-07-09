@@ -12,3 +12,12 @@ export function formatTime(iso: string | null): string {
     if (diffDays < 7) return `${diffDays} ngày trước`
     return d.toLocaleDateString('vi-VN')
 }
+
+export function formatDate(dateStr: string | null): string {
+    if (!dateStr) return '—'
+    return new Date(dateStr).toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    })
+}

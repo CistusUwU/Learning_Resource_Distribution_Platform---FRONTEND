@@ -6,7 +6,7 @@ import { formatDate } from '@utils/date'
 export default function BookCard({ item }: { item: LibraryItem }) {
   return (
     <Link
-      href={`/student/books/${item.book.book_id}/read`}
+      href={`/student/books/${item.book.book_id}`}
       className="block bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-xl transition-all"
     >
       <div className="relative aspect-[3/4] bg-slate-100 dark:bg-slate-700">

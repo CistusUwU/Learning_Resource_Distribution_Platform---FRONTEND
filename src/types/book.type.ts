@@ -18,3 +18,8 @@ export interface StaffBook {
         }
     }[]
 }
+
+export interface Book {
+    book_id: number
+    title: string
+}

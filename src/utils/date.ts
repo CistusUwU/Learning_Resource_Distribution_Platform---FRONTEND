@@ -1,6 +1,6 @@
-export function formatTime(iso: string | null): string {
-    if (!iso) return ''
-    const d = new Date(iso)
+export function formatTime(input: string | number | null): string {
+    if (input === null || input === undefined) return ''
+    const d = new Date(input)
     const now = new Date()
     const diffMs = now.getTime() - d.getTime()
     const diffMins = Math.floor(diffMs / 60000)

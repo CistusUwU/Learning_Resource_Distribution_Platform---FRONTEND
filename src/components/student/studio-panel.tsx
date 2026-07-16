@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { studioService } from '@services/studio.service'
-import { formatRelativeTime } from '@utils/date'
 import type { StudioHistoryItem, StudioHistoryDetail, StudioToolType, ChatMessage } from '@app-types/studio.type'
 import { FlashcardTool } from '@components/student/studio/flashcard-tool'
 import { QuizTool } from '@components/student/studio/quiz-tool'
 import { MindmapTool } from '@components/student/studio/mindmap-tool'
 import { ChatTool } from '@components/student/studio/chat-tool'
+import { formatTime } from '@utils/date'
 
 const TOOL_ITEMS: Array<{ id: StudioToolType; icon: string; title: string }> = [
     { id: 'flashcard', icon: '🃏', title: 'Thẻ ghi nhớ' },
@@ -241,7 +241,7 @@ export function StudioPanel({ bookId, collapsed, onToggleCollapsed, widthPx }: S
                                                                 {item.title}
                                                             </span>
                                                             <span className="block text-[11px] text-slate-400">
-                                                                {isPending ? 'dựa trên 1 nguồn' : `${formatRelativeTime(item.createdAt)}${item.isAuto ? ' · Tự động' : ''}`}
+                                                                {isPending ? 'dựa trên 1 nguồn' : `${formatTime(item.createdAt)}${item.isAuto ? ' · Tự động' : ''}`}
                                                             </span>
                                                         </span>
                                                     </button>

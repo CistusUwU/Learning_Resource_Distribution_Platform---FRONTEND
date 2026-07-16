@@ -21,7 +21,3 @@ export function formatDate(dateStr: string | null): string {
         year: 'numeric',
     })
 }
-
-export function formatRelativeTime(timestamp: number): string {
-    return formatTime(timestamp)
-}

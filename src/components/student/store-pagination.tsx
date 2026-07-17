@@ -1,8 +1,4 @@
-interface StorePaginationProps {
-    page: number
-    totalPages: number
-    onPageChange: (page: number) => void
-}
+import { StorePaginationProps } from "@app-types/store-pagination.type"
 
 export default function StorePagination({ page, totalPages, onPageChange }: StorePaginationProps) {
     if (totalPages <= 1) return null

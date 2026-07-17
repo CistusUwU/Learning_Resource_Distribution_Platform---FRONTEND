@@ -66,7 +66,7 @@ export default function StoreBookCard({ book, layout }: { book: StoreBook; layou
                         </span>
                     )}
                 </div>
-                <h3 className="mt-2 font-medium line-clamp-2">{book.title}</h3>
+                <h3 className="mt-2 font-medium line-clamp-2 min-h-[3rem]">{book.title}</h3>
                 {authorNames && (
                     <p className="text-sm text-slate-500 line-clamp-1">{authorNames}</p>
                 )}

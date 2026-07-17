@@ -4,22 +4,32 @@ import { ChevronDown } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { BookSortBy, SortOrder, PurchaseFilter, LayoutMode } from '@app-types/book.type'
 import { Category } from '@app-types/category.type'
-
-interface StoreFiltersProps {
-    search: string
-    categoryId: number | undefined
-    sortBy: BookSortBy
-    sortOrder: SortOrder
-    purchaseFilter: PurchaseFilter
-    layout: LayoutMode
-    categories: Category[]
-    onChange: (updates: Record<string, string | number | undefined>) => void
-}
+import { StoreFiltersProps } from '@app-types/store-filters.type'
 
 const DEBOUNCE_MS = 400
 
-const SELECT_CLASS =
-    'appearance-none w-full border rounded px-3 py-2 pr-8 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-600 dark:[color-scheme:dark]'
+function StoreFilterSelect({
+    value,
+    onChange,
+    children,
+}: {
+    value: string | number
+    onChange: (value: string) => void
+    children: React.ReactNode
+}) {
+    return (
+        <div className="relative">
+            <select
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                className="appearance-none w-full border rounded px-3 py-2 pr-8 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-600 dark:[color-scheme:dark]"
+            >
+                {children}
+            </select>
+            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+        </div>
+    )
+}
 
 export default function StoreFilters({
     search,
@@ -65,52 +75,38 @@ export default function StoreFilters({
                 placeholder="Tìm kiếm sách..."
                 className="border rounded px-3 py-2 flex-1 min-w-[200px] bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 border-slate-300 dark:border-slate-600"
             />
-    
-            <div className="relative">
-                <select
-                    value={categoryId ?? ''}
-                    onChange={(e) =>
-                        onChange({ categoryId: e.target.value ? Number(e.target.value) : undefined })
-                    }
-                    className={SELECT_CLASS}
-                >
-                    <option value="">Danh mục</option>
-                    {categories.map((cat) => (
-                        <option key={cat.major_id} value={cat.major_id}>
-                            {cat.major_name} ({cat._count.book_major})
-                        </option>
-                    ))}
-                </select>
-                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
-            </div>
-    
-            <div className="relative">
-                <select
-                    value={purchaseFilter}
-                    onChange={(e) => onChange({ purchaseFilter: e.target.value })}
-                    className={SELECT_CLASS}
-                >
-                    <option value="all">Tất cả</option>
-                    <option value="unpurchased">Chưa mua</option>
-                    <option value="purchased">Đã mua</option>
-                </select>
-                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
-            </div>
-    
-            <div className="relative">
-                <select
-                    value={`${sortBy}:${sortOrder}`}
-                    onChange={(e) => handleSortChange(e.target.value)}
-                    className={SELECT_CLASS}
-                >
-                    <option value="created_at:desc">Mới nhất</option>
-                    <option value="price:asc">Giá thấp → cao</option>
-                    <option value="price:desc">Giá cao → thấp</option>
-                    <option value="title:asc">Tên A-Z</option>
-                </select>
-                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
-            </div>
-    
+
+            <StoreFilterSelect
+                value={categoryId ?? ''}
+                onChange={(value) => onChange({ categoryId: value ? Number(value) : undefined })}
+            >
+                <option value="">Danh mục</option>
+                {categories.map((cat) => (
+                    <option key={cat.major_id} value={cat.major_id}>
+                        {cat.major_name} ({cat._count.book_major})
+                    </option>
+                ))}
+            </StoreFilterSelect>
+
+            <StoreFilterSelect
+                value={purchaseFilter}
+                onChange={(value) => onChange({ purchaseFilter: value })}
+            >
+                <option value="all">Tất cả</option>
+                <option value="unpurchased">Chưa mua</option>
+                <option value="purchased">Đã mua</option>
+            </StoreFilterSelect>
+
+            <StoreFilterSelect
+                value={`${sortBy}:${sortOrder}`}
+                onChange={handleSortChange}
+            >
+                <option value="created_at:desc">Mới nhất</option>
+                <option value="price:asc">Giá thấp → cao</option>
+                <option value="price:desc">Giá cao → thấp</option>
+                <option value="title:asc">Tên A-Z</option>
+            </StoreFilterSelect>
+
             <div className="flex border rounded overflow-hidden border-slate-300 dark:border-slate-600">
                 <button
                     type="button"

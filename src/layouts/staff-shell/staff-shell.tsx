@@ -77,10 +77,8 @@ export default function StaffShell({ children }: { children: ReactNode }) {
             </header>
 
             <div className="flex flex-1 overflow-hidden">
-                <aside className="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700">
-                    <AppSidebar navItems={navItems} />
-                </aside>
-                <main className="flex-1 overflow-y-auto bg-white dark:bg-slate-900">
+                <AppSidebar navItems={navItems} />
+                <main className="flex-1 overflow-y-auto bg-white dark:bg-slate-900 ml-64">
                     <div className="px-10 py-10">{children}</div>
                 </main>
             </div>

@@ -8,8 +8,13 @@ export class BookService {
     }
 
     async getBooks(query: BookQueryParams): Promise<StoreBookListResponse> {
+        const { ids, ...rest } = query
+        const params = ids && ids.length > 0
+            ? { ...rest, ids: ids.join(',') }
+            : rest
+        
         const { data } = await axiosInstance.get<StoreBookListResponse>('/books', {
-            params: query,
+            params,
         })
         return data
     }

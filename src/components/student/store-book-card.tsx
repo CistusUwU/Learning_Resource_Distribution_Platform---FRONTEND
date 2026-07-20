@@ -57,7 +57,7 @@ export default function StoreBookCard({ book, layout }: { book: StoreBook; layou
                             type="button"
                             onClick={handleAddToCart}
                             disabled={inCart}
-                            className="py-2 px-4 rounded bg-blue-600 text-white text-sm font-semibold whitespace-nowrap"
+                            className="py-2 px-4 rounded bg-blue-600 text-white text-sm font-semibold whitespace-nowrap disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
                         >
                             {inCart ? 'Đã có trong giỏ' : 'Thêm vào giỏ'}
                         </button>
@@ -100,7 +100,7 @@ export default function StoreBookCard({ book, layout }: { book: StoreBook; layou
                         type="button"
                         onClick={handleAddToCart}
                         disabled={inCart}
-                        className="flex-1 py-2 rounded bg-blue-600 text-white text-sm font-semibold"
+                        className="flex-1 py-2 rounded bg-blue-600 text-white text-sm font-semibold disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
                     >
                         {inCart ? 'Đã có trong giỏ' : 'Thêm vào giỏ'}
                     </button>

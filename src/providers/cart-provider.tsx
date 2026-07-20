@@ -7,6 +7,7 @@ const CART_STORAGE_KEY = 'lrdp_cart'
 interface CartContextValue {
     bookIds: number[]
     count: number
+    ready: boolean
     addItem: (bookId: number) => void
     removeItem: (bookId: number) => void
     removeItems: (bookIds: number[]) => void
@@ -34,11 +35,11 @@ function writeCartToStorage(bookIds: number[]) {
 
 export function CartProvider({ children }: { children: ReactNode }) {
     const [bookIds, setBookIds] = useState<number[]>([])
-    const [mounted, setMounted] = useState(false)
+    const [ready, setReady] = useState(false)
 
     useEffect(() => {
         setBookIds(readCartFromStorage())
-        setMounted(true)
+        setReady(true)
     }, [])
 
     const addItem = (bookId: number) => {
@@ -71,8 +72,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return (
         <CartContext.Provider
             value={{
-                bookIds: mounted ? bookIds : [],
-                count: mounted ? bookIds.length : 0,
+                bookIds: ready ? bookIds : [],
+                count: ready ? bookIds.length : 0,
+                ready,
                 addItem,
                 removeItem,
                 removeItems,

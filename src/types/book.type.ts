@@ -71,4 +71,5 @@ export interface BookQueryParams {
     sortBy?: BookSortBy
     sortOrder?: SortOrder
     purchaseFilter?: PurchaseFilter
+    ids?: number[]
 }

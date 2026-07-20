@@ -81,7 +81,7 @@ function ReadNowAction({ items }: { items: Order['order_item'] }) {
 function PurchaseTableRow({ order }: { order: Order }) {
   return (
     <tr className="border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50/50 dark:hover:bg-slate-700/20 transition-colors">
-      <td className="p-4 align-top">
+      <td className="p-4 align-middle">
         <div className="space-y-2">
           {order.order_item.map((item) => (
             <div key={item.book_id} className="flex items-center gap-3">
@@ -106,19 +106,19 @@ function PurchaseTableRow({ order }: { order: Order }) {
           ))}
         </div>
       </td>
-      <td className="p-4 align-top font-mono text-sm text-slate-700 dark:text-slate-300 whitespace-nowrap">
+      <td className="p-4 align-middle font-mono text-sm text-slate-700 dark:text-slate-300 whitespace-nowrap">
         {order.order_code}
       </td>
-      <td className="p-4 align-top text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap">
+      <td className="p-4 align-middle text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap">
         {formatTime(order.created_at)}
       </td>
-      <td className="p-4 align-top font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
+      <td className="p-4 align-middle font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
         {formatCurrency(order.total_amount)}
       </td>
-      <td className="p-4 align-top">
+      <td className="p-4 align-middle">
         <OrderStatusBadge status={order.status} />
       </td>
-      <td className="p-4 align-top">
+      <td className="p-4 align-middle">
         {order.status === 'PENDING' && (
           <Link
             href={getCheckoutPath(order.order_code, order.total_amount)}

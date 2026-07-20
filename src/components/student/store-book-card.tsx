@@ -1,10 +1,20 @@
+'use client'
+
 import Link from 'next/link'
 import BookCover from '@components/book-cover'
 import { StoreBook, LayoutMode } from '@app-types/book.type'
 import { formatCurrency } from '@utils/currency'
+import { useCart } from '@providers/cart-provider'
 
 export default function StoreBookCard({ book, layout }: { book: StoreBook; layout: LayoutMode }) {
     const authorNames = book.book_author.map((a) => a.lecturer.full_name).join(', ')
+    const { addItem, isInCart } = useCart()
+    const inCart = isInCart(book.book_id)
+
+    const handleAddToCart = () => {
+        if (inCart) return
+        addItem(book.book_id)
+    }
 
     if (layout === 'list') {
         return (
@@ -45,9 +55,11 @@ export default function StoreBookCard({ book, layout }: { book: StoreBook; layou
                     ) : (
                         <button
                             type="button"
+                            onClick={handleAddToCart}
+                            disabled={inCart}
                             className="py-2 px-4 rounded bg-blue-600 text-white text-sm font-semibold whitespace-nowrap"
                         >
-                            Thêm vào giỏ
+                            {inCart ? 'Đã có trong giỏ' : 'Thêm vào giỏ'}
                         </button>
                     )}
                 </div>
@@ -86,9 +98,11 @@ export default function StoreBookCard({ book, layout }: { book: StoreBook; layou
                 ) : (
                     <button
                         type="button"
+                        onClick={handleAddToCart}
+                        disabled={inCart}
                         className="flex-1 py-2 rounded bg-blue-600 text-white text-sm font-semibold"
                     >
-                        Thêm vào giỏ
+                        {inCart ? 'Đã có trong giỏ' : 'Thêm vào giỏ'}
                     </button>
                 )}
             </div>

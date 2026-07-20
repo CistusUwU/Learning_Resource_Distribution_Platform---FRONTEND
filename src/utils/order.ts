@@ -3,7 +3,7 @@ import { getCheckoutPath } from "@utils/checkout"
 
 import { formatTime } from "@utils/date"
 
-function formatOrderStatus(status: string): string {
+export function formatOrderStatus(status: string): string {
     if (status === 'COMPLETED') return 'Đã thanh toán'
     if (status === 'PENDING') return 'Đang chờ thanh toán'
     if (status === 'CANCELLED') return 'Đã hủy'

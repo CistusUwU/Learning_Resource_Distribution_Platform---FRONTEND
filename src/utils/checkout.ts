@@ -4,5 +4,5 @@ export function getCheckoutPath(orderCode: string, totalAmount: string): string 
     const q = new URLSearchParams()
     q.set('orderId', orderCode)
     q.set('amount', String(amount))
-    return `/payment/checkout?${q.toString()}`
+    return `/student/payment/checkout?${q.toString()}`
 }

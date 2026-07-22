@@ -12,8 +12,50 @@ export default function StoreBookCard({ book, layout }: { book: StoreBook; layou
     const inCart = isInCart(book.book_id)
 
     const handleAddToCart = () => {
-        if (inCart) return
+        if (inCart || book.has_pending_order) return
         addItem(book.book_id)
+    }
+
+    const renderActionButton = (fullWidthClass: string) => {
+        if (book.is_owned) {
+            return (
+                <Link
+                    href={`/student/books/${book.book_id}`}
+                    className={`${fullWidthClass} py-2 rounded bg-emerald-600 text-white text-sm font-semibold text-center`}
+                >
+                    Đọc ngay
+                </Link>
+            )
+        }
+        if (book.has_pending_order) {
+            return (
+                <Link
+                    href="/student/purchase-history"
+                    className={`${fullWidthClass} py-2 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-sm font-semibold text-center`}
+                >
+                    Đang chờ thanh toán
+                </Link>
+            )
+        }
+        if (inCart) {
+            return (
+                <Link
+                    href="/student/cart"
+                    className={`${fullWidthClass} py-2 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-sm font-semibold text-center`}
+                >
+                    Đã có trong giỏ
+                </Link>
+            )
+        }
+        return (
+            <button
+                type="button"
+                onClick={handleAddToCart}
+                className={`${fullWidthClass} py-2 rounded bg-blue-600 text-white text-sm font-semibold`}
+            >
+                Thêm vào giỏ
+            </button>
+        )
     }
 
     if (layout === 'list') {
@@ -41,27 +83,14 @@ export default function StoreBookCard({ book, layout }: { book: StoreBook; layou
                     )}
                     <p className="mt-2 font-semibold">{formatCurrency(book.price)}</p>
                 </div>
-                <div className="flex flex-col gap-2 justify-center flex-shrink-0">
+                <div className="flex flex-col gap-2 justify-center flex-shrink-0 w-40">
                     <Link
                         href={`/student/store/${book.book_id}`}
                         className="py-2 px-4 rounded border border-slate-300 dark:border-slate-600 text-sm font-semibold text-center whitespace-nowrap"
                     >
                         Xem chi tiết
                     </Link>
-                    {book.is_owned ? (
-                        <span className="py-2 px-4 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-sm font-semibold text-center">
-                            Đã sở hữu
-                        </span>
-                    ) : (
-                        <button
-                            type="button"
-                            onClick={handleAddToCart}
-                            disabled={inCart}
-                            className="py-2 px-4 rounded bg-blue-600 text-white text-sm font-semibold whitespace-nowrap disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
-                        >
-                            {inCart ? 'Đã có trong giỏ' : 'Thêm vào giỏ'}
-                        </button>
-                    )}
+                    {renderActionButton('w-full')}
                 </div>
             </div>
         )
@@ -91,20 +120,7 @@ export default function StoreBookCard({ book, layout }: { book: StoreBook; layou
                 >
                     Xem chi tiết
                 </Link>
-                {book.is_owned ? (
-                    <span className="flex-1 py-2 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-sm font-semibold text-center">
-                        Đã sở hữu
-                    </span>
-                ) : (
-                    <button
-                        type="button"
-                        onClick={handleAddToCart}
-                        disabled={inCart}
-                        className="flex-1 py-2 rounded bg-blue-600 text-white text-sm font-semibold disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
-                    >
-                        {inCart ? 'Đã có trong giỏ' : 'Thêm vào giỏ'}
-                    </button>
-                )}
+                {renderActionButton('flex-1')}
             </div>
         </div>
     )

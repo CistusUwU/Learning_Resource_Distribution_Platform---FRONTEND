@@ -1,12 +1,9 @@
 'use client'
 
 import { ChevronDown } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
 import { BookSortBy, SortOrder, PurchaseFilter, LayoutMode } from '@app-types/book.type'
 import { Category } from '@app-types/category.type'
 import { StoreFiltersProps } from '@app-types/store-filters.type'
-
-const DEBOUNCE_MS = 400
 
 function StoreFilterSelect({
     value,
@@ -32,7 +29,6 @@ function StoreFilterSelect({
 }
 
 export default function StoreFilters({
-    search,
     categoryId,
     sortBy,
     sortOrder,
@@ -41,26 +37,6 @@ export default function StoreFilters({
     categories,
     onChange,
 }: StoreFiltersProps) {
-    const [searchInput, setSearchInput] = useState(search)
-    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-    useEffect(() => {
-        if (debounceRef.current) return
-        setSearchInput(search)
-    }, [search])
-
-    const handleSearchInputChange = (value: string) => {
-        setSearchInput(value)
-
-        if (debounceRef.current) {
-            clearTimeout(debounceRef.current)
-        }
-
-        debounceRef.current = setTimeout(() => {
-            onChange({ search: value })
-        }, DEBOUNCE_MS)
-    }
-
     const handleSortChange = (value: string) => {
         const [newSortBy, newSortOrder] = value.split(':')
         onChange({ sortBy: newSortBy, sortOrder: newSortOrder })
@@ -68,14 +44,6 @@ export default function StoreFilters({
 
     return (
         <div className="flex flex-wrap gap-4 mb-6">
-            <input
-                type="text"
-                value={searchInput}
-                onChange={(e) => handleSearchInputChange(e.target.value)}
-                placeholder="Tìm kiếm sách..."
-                className="border rounded px-3 py-2 flex-1 min-w-[200px] bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 border-slate-300 dark:border-slate-600"
-            />
-
             <StoreFilterSelect
                 value={categoryId ?? ''}
                 onChange={(value) => onChange({ categoryId: value ? Number(value) : undefined })}

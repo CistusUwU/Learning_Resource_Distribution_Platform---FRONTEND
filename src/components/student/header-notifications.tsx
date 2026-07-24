@@ -1,35 +1,37 @@
 'use client'
 
-import { ordersService } from "@services/orders.service"
+import { useOrders } from "@providers/orders-provider"
 import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
-import { NotificationItem, toNotification } from "@utils/order"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { toNotification } from "@utils/order"
+
+const LAST_SEEN_KEY = 'lrdp_notifications_last_seen'
+
+function readLastSeen(): number {
+    if (typeof window === 'undefined') return 0
+    try {
+        const raw = localStorage.getItem(LAST_SEEN_KEY)
+        return raw ? Number(raw) : 0
+    } catch {
+        return 0
+    }
+}
 
 export function HeaderNotifications() {
-    const [items, setItems] = useState<NotificationItem[]>([])
-    const [loading, setLoading] = useState(false)
+    const { orders: rawOrders, loading, error } = useOrders()
     const [open, setOpen] = useState(false)
-    const [error, setError] = useState<string | null>(null)
+    const [lastSeen, setLastSeen] = useState<number>(readLastSeen)
     const panelRef = useRef<HTMLDivElement>(null)
 
-    useEffect(() => {
-        if (open) setLoading(true)
-        setError(null)
-        ordersService.getMyOrders()
-            .then((orders) => {
-                const sorted = [...orders].sort((a, b) => {
-                    const t1 = a.created_at ? new Date(a.created_at).getTime() : 0
-                    const t2 = b.created_at ? new Date(b.created_at).getTime() : 0
-                    return t2 - t1
-                })
-                setItems(sorted.slice(0, 15).map(toNotification))
-            })
-            .catch((e) => {
-                setError(e instanceof Error ? e.message : 'Không tải được thông báo')
-                setItems([])
-            })
-            .finally(() => setLoading(false))
-    }, [open])
+    const orders = useMemo(
+        () =>
+            [...rawOrders].sort((a, b) => {
+                const t1 = a.created_at ? new Date(a.created_at).getTime() : 0
+                const t2 = b.created_at ? new Date(b.created_at).getTime() : 0
+                return t2 - t1
+            }),
+        [rawOrders]
+    )
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -41,20 +43,41 @@ export function HeaderNotifications() {
         return () => document.removeEventListener('mousedown', handleClickOutside)
     }, [])
 
+    const handleToggle = () => {
+        setOpen((v) => {
+            const next = !v
+            if (next) {
+                const now = Date.now()
+                setLastSeen(now)
+                try {
+                    localStorage.setItem(LAST_SEEN_KEY, String(now))
+                } catch {}
+            }
+            return next
+        })
+    }
+
+    const items = useMemo(() => orders.slice(0, 15).map(toNotification), [orders])
+
+    const unreadCount = useMemo(
+        () => orders.filter((o) => o.created_at && new Date(o.created_at).getTime() > lastSeen).length,
+        [orders, lastSeen]
+    )
+
     return (
         <div className="relative" ref={panelRef}>
             <button
                 type="button"
-                onClick={() => setOpen((v) => !v)}
+                onClick={handleToggle}
                 className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full text-slate-600 dark:text-slate-400 transition-colors"
                 title="Thông báo"
             >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
-                {items.length > 0 && (
+                {unreadCount > 0 && (
                     <span className="absolute top-1 right-1 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white px-1">
-                        {items.length > 99 ? '99+' : items.length}
+                        {unreadCount > 99 ? '99+' : unreadCount}
                     </span>
                 )}
             </button>

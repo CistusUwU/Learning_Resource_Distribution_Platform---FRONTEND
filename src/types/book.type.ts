@@ -3,7 +3,7 @@ export type BookApprovalStatus = 'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED'
 export interface StaffBook {
     book_id: number
     title: string
-    price: number
+    price: string
     file_url: string | null
     cover_image: string | null
     approval_status: BookApprovalStatus
@@ -49,6 +49,7 @@ export interface StoreBook {
     book_author: StoreBookAuthor[]
     book_major: StoreBookMajor[]
     is_owned: boolean
+    has_pending_order: boolean
 }
 
 export interface StoreBookListResponse {
@@ -71,4 +72,5 @@ export interface BookQueryParams {
     sortBy?: BookSortBy
     sortOrder?: SortOrder
     purchaseFilter?: PurchaseFilter
+    ids?: number[]
 }

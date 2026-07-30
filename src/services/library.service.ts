@@ -11,6 +11,10 @@ export class LibraryService {
         const { data } = await axiosInstance.get<LibraryItem>(`/library/${bookId}`)
         return data
     }
+
+    async updateProgress(bookId: number, page: number): Promise<void> {
+        await axiosInstance.patch(`/library/${bookId}/progress`, { page })
+    }
 }
 
 export const libraryService = new LibraryService()

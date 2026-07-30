@@ -18,6 +18,14 @@ export class BookService {
         })
         return data
     }
+
+    async getBookFile(bookId: number): Promise<Blob> {
+        const { data } = await axiosInstance.get<Blob>(`/books/${bookId}/file`, {
+            responseType: 'blob',
+            timeout: 60000,
+        })
+        return data
+    }
 }
 
 export const bookService = new BookService()

@@ -18,13 +18,12 @@ const TOOL_ITEMS: Array<{ id: StudioToolType; icon: string; title: string }> = [
 interface StudioPanelProps {
     bookId: number
     collapsed: boolean
-    onToggleCollapsed: () => void
     widthPx: number
 }
 
 type ViewMode = 'list' | 'detail' | 'chat' | 'mindmap'
 
-export function StudioPanel({ bookId, collapsed, onToggleCollapsed, widthPx }: StudioPanelProps) {
+export function StudioPanel({ bookId, collapsed, widthPx }: StudioPanelProps) {
     const [history, setHistory] = useState<StudioHistoryItem[] | null>(null)
     const [generatingTypes, setGeneratingTypes] = useState<Set<StudioToolType>>(new Set())
     const [genError, setGenError] = useState<string | null>(null)
@@ -159,17 +158,10 @@ export function StudioPanel({ bookId, collapsed, onToggleCollapsed, widthPx }: S
     return (
         <aside className="h-full shrink-0 transition-[width,opacity,min-width] duration-200 ease-out overflow-hidden" style={panelStyle}>
             <div className="h-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex flex-col overflow-hidden">
-                <div className="px-3 py-2.5 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-50/80 dark:bg-slate-800/50">
-                    <h2 className="text-xs font-extrabold tracking-wide text-slate-500 dark:text-slate-400 uppercase">
+                <div className="px-3 py-2.5 border-b border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/50">
+                    <h2 className="text-xs font-extrabold tracking-wide text-slate-500 dark:text-slate-400 uppercase text-center">
                         Studio
                     </h2>
-                    <button
-                        type="button"
-                        onClick={onToggleCollapsed}
-                        className="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-bold"
-                    >
-                        ›
-                    </button>
                 </div>
 
                 <div className="flex-1 min-h-0 overflow-y-auto p-3">

@@ -1,11 +1,20 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
-import { useParams } from 'next/navigation'
+import { useEffect, useState, useCallback, useRef } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { bookService } from '@services/book.service'
+import { libraryService } from '@services/library.service'
 import { StudioPanel } from '@components/student/studio-panel'
-import { ReaderPlaceholder } from '@components/student/reader-placeholder'
+import { HeaderUserActions } from '@components/header-user-actions'
+import { useAuth } from '@providers/auth-provider'
+import { useCart } from '@providers/cart-provider'
+import dynamic from 'next/dynamic'
+
+const PdfReader = dynamic(
+    () => import('@components/reader/pdf-reader').then((mod) => mod.PdfReader),
+    { ssr: false }
+)
 
 const STUDIO_W_KEY = 'studio_width_px'
 const STUDIO_W_DEFAULT = 400
@@ -14,9 +23,15 @@ const STUDIO_W_MAX = 640
 
 export default function StudentBookPage() {
     const params = useParams()
+    const router = useRouter()
     const bookId = parseInt(params.id as string)
+    const { user, logout } = useAuth()
+    const { count: cartCount } = useCart()
 
     const [bookTitle, setBookTitle] = useState<string | null>(null)
+    const [pdfData, setPdfData] = useState<Blob | null>(null)
+    const [initialPage, setInitialPage] = useState<number | undefined>(undefined)
+    const progressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(true)
     const [studioCollapsed, setStudioCollapsed] = useState(false)
@@ -34,13 +49,13 @@ export default function StudentBookPage() {
 
     useEffect(() => {
         let cancelled = false
-    
+
         if (isNaN(bookId) || bookId <= 0) {
             setError('Sách không hợp lệ')
             setLoading(false)
             return
         }
-    
+
         bookService.getBook(bookId)
             .then((book) => {
                 if (!cancelled) setBookTitle(book.title)
@@ -52,7 +67,23 @@ export default function StudentBookPage() {
             .finally(() => {
                 if (!cancelled) setLoading(false)
             })
-    
+
+        bookService.getBookFile(bookId)
+            .then((data) => {
+                if (!cancelled) setPdfData(data)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+
+        libraryService.getLibraryItem(bookId)
+            .then((item) => {
+                if (!cancelled && item.reading_progress) setInitialPage(item.reading_progress)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+
         return () => { cancelled = true }
     }, [bookId])
 
@@ -76,6 +107,13 @@ export default function StudentBookPage() {
         window.addEventListener('mousemove', onMove)
         window.addEventListener('mouseup', onUp)
     }, [studioWidthPx])
+
+    const handlePageChange = useCallback((page: number) => {
+        if (progressTimerRef.current) clearTimeout(progressTimerRef.current)
+        progressTimerRef.current = setTimeout(() => {
+            libraryService.updateProgress(bookId, page).catch((err) => console.error(err))
+        }, 1500)
+    }, [bookId])
 
     if (loading) {
         return (
@@ -101,7 +139,7 @@ export default function StudentBookPage() {
     const titleShort = bookTitle && bookTitle.length > 56 ? `${bookTitle.slice(0, 54)}…` : bookTitle || `Sách #${bookId}`
 
     return (
-        <div className="flex flex-col h-[calc(100vh-4rem)] bg-slate-50 dark:bg-slate-950">
+        <div className="flex flex-col h-screen bg-slate-50 dark:bg-slate-950">
             <header className="shrink-0 flex items-center gap-3 px-3 sm:px-4 py-2.5 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
                 <Link
                     href="/student/my-books"
@@ -113,18 +151,26 @@ export default function StudentBookPage() {
                 <h1 className="flex-1 min-w-0 text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate">
                     {titleShort}
                 </h1>
-                <button
-                    type="button"
-                    onClick={() => setStudioCollapsed((v) => !v)}
-                    className="shrink-0 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm font-semibold"
-                >
-                    {studioCollapsed ? 'Mở công cụ' : 'Ẩn panel'}
-                </button>
+                {user && (
+                    <HeaderUserActions
+                        userName={user.full_name}
+                        roleLabel="Sinh viên"
+                        cartCount={cartCount}
+                        onLogout={() => { logout(); router.push('/login') }}
+                    />
+                )}
             </header>
 
             <div className="flex-1 min-h-0 flex gap-0 p-2 sm:p-3">
-                <ReaderPlaceholder />
-
+                {pdfData && (
+                    <PdfReader
+                        data={pdfData}
+                        studioCollapsed={studioCollapsed}
+                        onToggleStudio={() => setStudioCollapsed((v) => !v)}
+                        initialPage={initialPage}
+                        onPageChange={handlePageChange}
+                    />
+                )}
                 {!studioCollapsed && (
                     <div
                         role="separator"
@@ -140,7 +186,6 @@ export default function StudentBookPage() {
                 <StudioPanel
                     bookId={bookId}
                     collapsed={studioCollapsed}
-                    onToggleCollapsed={() => setStudioCollapsed((v) => !v)}
                     widthPx={studioWidthPx}
                 />
             </div>

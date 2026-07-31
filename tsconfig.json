@@ -27,6 +27,7 @@
       "@store/*": ["./src/store/*"],
       "@app-types/*": ["./src/types/*"],
       "@utils/*": ["./src/utils/*"],
+      "@hooks/*": ["./src/hooks/*"],
       "@app/*": ["./src/app/*"]
     }
   },

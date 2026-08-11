@@ -1,4 +1,4 @@
-export type BookApprovalStatus = 'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED'
+export type BookApprovalStatus = 'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'UPDATE_REQUIRED'
 
 export interface StaffBook {
     book_id: number

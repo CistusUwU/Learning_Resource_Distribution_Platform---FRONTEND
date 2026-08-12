@@ -7,34 +7,35 @@ import type { StaffBook } from "@app-types/book.type";
 import { useEffect, useState } from "react";
 
 export default function StaffHomePage() {
-  const { user } = useAuth()
-  const [books, setBooks] = useState<StaffBook[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [pendingCount, setPendingCount] = useState<number>(0)
-
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const data = await staffService.getMyBooks()
-        setBooks(data)
-        if (user?.role === 'ADMIN') {
-          const count = await adminService.getPendingBooksCount()
-          setPendingCount(count)
+    const { user } = useAuth()
+    const [books, setBooks] = useState<StaffBook[]>([])
+    const [total, setTotal] = useState(0)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+    const [pendingCount, setPendingCount] = useState<number>(0)
+  
+    useEffect(() => {
+      const fetchBooks = async () => {
+        try {
+          const data = await staffService.getMyBooks({ limit: 100 })
+          setBooks(data.items)
+          setTotal(data.total)
+          if (user?.role === 'ADMIN') {
+            const count = await adminService.getPendingBooksCount()
+            setPendingCount(count)
+          }
+        } catch {
+          setError('Không thể tải dữ liệu. Vui lòng thử lại.')
+        } finally {
+          setLoading(false)
         }
-      } catch {
-        setError('Không thể tải dữ liệu. Vui lòng thử lại.')
-      } finally {
-        setLoading(false)
       }
-    }
-    fetchBooks()
-  }, [])
-
-  const total = books.length
-  const approved = books.filter(b => b.approval_status === 'APPROVED').length
-  const pending = books.filter(b => b.approval_status === 'PENDING').length
-  const draft = books.filter(b => b.approval_status === 'DRAFT').length
+      fetchBooks()
+    }, [])
+  
+    const approved = books.filter(b => b.approval_status === 'APPROVED').length
+    const pending = books.filter(b => b.approval_status === 'PENDING').length
+    const draft = books.filter(b => b.approval_status === 'DRAFT').length
 
   return (
     <div className="space-y-8 pb-10">

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import BookRecordTable from '@components/staff/book-record-table'
+import Pagination from '@components/pagination'
 import { staffService } from '@services/staff.service'
 import type { StaffBook, BookApprovalStatus } from '@app-types/book.type'
 
@@ -15,11 +16,15 @@ const TABS: { label: string; value: BookApprovalStatus | 'ALL' }[] = [
   { label: 'Bị từ chối', value: 'REJECTED' },
 ]
 
+const LIMIT = 10
+
 export default function StaffBooksPage() {
   const [books, setBooks] = useState<StaffBook[]>([])
+  const [totalPages, setTotalPages] = useState(1)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<BookApprovalStatus | 'ALL'>('ALL')
+  const [page, setPage] = useState(1)
   const [submittingId, setSubmittingId] = useState<number | null>(null)
   const [reasonBook, setReasonBook] = useState<StaffBook | null>(null)
 
@@ -27,8 +32,14 @@ export default function StaffBooksPage() {
     async function fetchBooks() {
       try {
         setLoading(true)
-        const data = await staffService.getMyBooks()
-        setBooks(data)
+        setError(null)
+        const data = await staffService.getMyBooks({
+          page,
+          limit: LIMIT,
+          status: activeTab === 'ALL' ? undefined : activeTab,
+        })
+        setBooks(data.items)
+        setTotalPages(data.totalPages)
       } catch (err) {
         console.error(err)
         setError('Không thể tải danh sách sách. Vui lòng thử lại.')
@@ -37,7 +48,12 @@ export default function StaffBooksPage() {
       }
     }
     fetchBooks()
-  }, [])
+  }, [page, activeTab])
+
+  function handleTabChange(tab: BookApprovalStatus | 'ALL') {
+    setActiveTab(tab)
+    setPage(1)
+  }
 
   async function handleSubmit(bookId: number) {
     try {
@@ -55,8 +71,10 @@ export default function StaffBooksPage() {
   async function handleCancel(bookId: number) {
     try {
       setSubmittingId(bookId)
-      const updated = await staffService.cancelSubmission(bookId)
-      setBooks((prev) => prev.map((b) => (b.book_id === bookId ? updated : b)))
+      await staffService.cancelSubmission(bookId)
+      setBooks((prev) =>
+        prev.map((b) => (b.book_id === bookId ? { ...b, approval_status: 'DRAFT', submitted_at: null } : b))
+      )
     } catch (err) {
       console.error(err)
       alert('Hủy nộp thất bại. Vui lòng thử lại.')
@@ -64,8 +82,6 @@ export default function StaffBooksPage() {
       setSubmittingId(null)
     }
   }
-
-  const filteredBooks = activeTab === 'ALL' ? books : books.filter((b) => b.approval_status === activeTab)
 
   return (
     <>
@@ -79,20 +95,17 @@ export default function StaffBooksPage() {
 
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex gap-2 flex-wrap">
-            {TABS.map((tab) => {
-              const count = tab.value === 'ALL' ? books.length : books.filter((b) => b.approval_status === tab.value).length
-              return (
-                <button
-                  key={tab.value}
-                  onClick={() => setActiveTab(tab.value)}
-                  className={`px-4 py-2 rounded-radius-pill text-sm font-semibold transition-colors ${
-                    activeTab === tab.value ? 'bg-primary text-white' : 'bg-surface border border-border text-text-secondary'
-                  }`}
-                >
-                  {tab.label} ({count})
-                </button>
-              )
-            })}
+            {TABS.map((tab) => (
+              <button
+                key={tab.value}
+                onClick={() => handleTabChange(tab.value)}
+                className={`px-4 py-2 rounded-radius-pill text-sm font-semibold transition-colors ${
+                  activeTab === tab.value ? 'bg-primary text-white' : 'bg-surface border border-border text-text-secondary'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
           <button
             disabled
@@ -115,19 +128,19 @@ export default function StaffBooksPage() {
           </div>
         )}
 
-        {!loading && !error && filteredBooks.length === 0 && activeTab === 'ALL' && (
+        {!loading && !error && books.length === 0 && activeTab === 'ALL' && (
           <div className="bg-surface rounded-radius-lg border border-border text-center py-12">
             <p className="font-semibold text-text">Bạn chưa có sách nào</p>
             <p className="text-sm text-text-secondary mt-1">Thêm tài liệu đầu tiên để bắt đầu xây dựng thư viện học tập của bạn.</p>
           </div>
         )}
 
-        {!loading && !error && filteredBooks.length === 0 && activeTab !== 'ALL' && (
+        {!loading && !error && books.length === 0 && activeTab !== 'ALL' && (
           <div className="bg-surface rounded-radius-lg border border-border text-center py-12">
             <p className="font-semibold text-text">Không có sách ở trạng thái này</p>
             <p className="text-sm text-text-secondary mt-1">Hãy thử chọn trạng thái khác để xem sách.</p>
             <button
-              onClick={() => setActiveTab('ALL')}
+              onClick={() => handleTabChange('ALL')}
               className="mt-3 rounded-radius-md border border-border px-4 py-2 text-sm font-semibold text-text hover:bg-border/30"
             >
               Xem tất cả sách
@@ -135,46 +148,49 @@ export default function StaffBooksPage() {
           </div>
         )}
 
-        {!loading && !error && filteredBooks.length > 0 && (
-          <BookRecordTable
-            books={filteredBooks}
-            renderActions={(book) => (
-              <div className="flex gap-2 flex-wrap">
-                <Link
-                  href={`/staff/books/${book.book_id}/preview`}
-                  className="text-xs font-semibold text-secondary hover:underline"
-                >
-                  Xem trước
-                </Link>
-                {(book.approval_status === 'DRAFT' || book.approval_status === 'UPDATE_REQUIRED') && (
-                  <button
-                    onClick={() => handleSubmit(book.book_id)}
-                    disabled={submittingId === book.book_id}
-                    className="text-xs font-semibold text-primary hover:underline disabled:opacity-50"
+        {!loading && !error && books.length > 0 && (
+          <div className="space-y-4">
+            <BookRecordTable
+              books={books}
+              renderActions={(book) => (
+                <div className="flex gap-2 flex-wrap">
+                  <Link
+                    href={`/staff/books/${book.book_id}/preview`}
+                    className="inline-flex items-center rounded-radius-md border border-border px-3 py-1.5 text-xs font-semibold text-text hover:bg-border/30 transition-colors"
                   >
-                    Nộp duyệt
-                  </button>
-                )}
-                {book.approval_status === 'PENDING' && (
-                  <button
-                    onClick={() => handleCancel(book.book_id)}
-                    disabled={submittingId === book.book_id}
-                    className="text-xs font-semibold text-error hover:underline disabled:opacity-50"
-                  >
-                    Hủy nộp
-                  </button>
-                )}
-                {book.approval_status === 'REJECTED' && (
-                  <button
-                    onClick={() => setReasonBook(book)}
-                    className="text-xs font-semibold text-text-secondary hover:underline"
-                  >
-                    Xem lý do
-                  </button>
-                )}
-              </div>
-            )}
-          />
+                    Xem trước
+                  </Link>
+                  {(book.approval_status === 'DRAFT' || book.approval_status === 'UPDATE_REQUIRED') && (
+                    <button
+                      onClick={() => handleSubmit(book.book_id)}
+                      disabled={submittingId === book.book_id}
+                      className="inline-flex items-center rounded-radius-md bg-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-primary-hover transition-colors disabled:opacity-50"
+                    >
+                      Nộp duyệt
+                    </button>
+                  )}
+                  {book.approval_status === 'PENDING' && (
+                    <button
+                      onClick={() => handleCancel(book.book_id)}
+                      disabled={submittingId === book.book_id}
+                      className="inline-flex items-center rounded-radius-md border border-error px-3 py-1.5 text-xs font-semibold text-error hover:bg-error/10 transition-colors disabled:opacity-50"
+                    >
+                      Hủy nộp
+                    </button>
+                  )}
+                  {book.approval_status === 'REJECTED' && (
+                    <button
+                      onClick={() => setReasonBook(book)}
+                      className="inline-flex items-center rounded-radius-md border border-border px-3 py-1.5 text-xs font-semibold text-text hover:bg-border/30 transition-colors"
+                    >
+                      Xem lý do
+                    </button>
+                  )}
+                </div>
+              )}
+            />
+            <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+          </div>
         )}
       </div>
 

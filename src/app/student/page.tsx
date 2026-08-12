@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import StudentShell from "@layouts/student-shell/student-shell"
-import { PendingPaymentBanner } from "@components/student/pending-payment-banner"
 import { useAuth } from "@providers/auth-provider"
 import { libraryService } from "@services/library.service"
 
@@ -26,8 +25,6 @@ export default function StudentDashboardPage() {
     return (
         <StudentShell>
             <div className="space-y-8 pb-10">
-                <PendingPaymentBanner />
-
                 <div className="rounded-[2.5rem] bg-white dark:bg-[#0F172A] dark:bg-slate-800/80 relative overflow-hidden p-10 border border-slate-350 dark:border-slate-800">
                     <div className="absolute top-[-10%] right-[-10%] w-[520px] h-[520px] bg-blue-600/20 rounded-full blur-3xl" />
                     <div className="absolute bottom-[-10%] left-[-10%] w-[420px] h-[420px] bg-indigo-600/20 rounded-full blur-3xl" />

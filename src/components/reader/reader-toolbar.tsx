@@ -16,6 +16,7 @@ interface ReaderToolbarProps {
     onZoomIn: () => void
     studioCollapsed: boolean
     onToggleStudio: () => void
+    showStudioToggle?: boolean
 }
 
 const groupLabel = 'text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide text-center mb-1'
@@ -46,6 +47,7 @@ export function ReaderToolbar({
     onZoomIn,
     studioCollapsed,
     onToggleStudio,
+    showStudioToggle = true,
 }: ReaderToolbarProps) {
     return (
         <div className="shrink-0 grid grid-cols-[1fr_auto_1fr] items-center gap-1 px-2 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl mb-2">
@@ -107,14 +109,16 @@ export function ReaderToolbar({
                 </div>
             </div>
 
-            <button
-                type="button"
-                className={navBtn + ' justify-self-end'}
-                onClick={onToggleStudio}
-                title={studioCollapsed ? 'Mở công cụ' : 'Ẩn panel'}
-            >
-                {studioCollapsed ? <PanelRightOpen size={18} /> : <PanelRightClose size={18} />}
-            </button>
+            {showStudioToggle && (
+                <button
+                    type="button"
+                    className={navBtn + ' justify-self-end'}
+                    onClick={onToggleStudio}
+                    title={studioCollapsed ? 'Mở công cụ' : 'Ẩn panel'}
+                >
+                    {studioCollapsed ? <PanelRightOpen size={18} /> : <PanelRightClose size={18} />}
+                </button>
+            )}
         </div>
     )
 }

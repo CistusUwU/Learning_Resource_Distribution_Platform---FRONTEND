@@ -88,7 +88,7 @@ export default function StorePage() {
             })
             .catch((err) => {
                 console.error(err)
-                setError('Không thể tải danh sách sách. Vui lòng thử lại.')
+                setError('Không thể tải danh sách giáo trình. Vui lòng thử lại.')
             })
             .finally(() => setLoading(false))
     }, [search, categoryId, page, sortBy, sortOrder, purchaseFilter])
@@ -113,7 +113,7 @@ export default function StorePage() {
                     {error ? (
                         <p>{error}</p>
                     ) : books.length === 0 ? (
-                        <p>Không tìm thấy sách nào.</p>
+                        <p>Không tìm thấy giáo trình nào.</p>
                     ) : layout === 'grid' ? (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {books.map((book) => (

@@ -205,7 +205,7 @@ export function StudioPanel({ bookId, collapsed, widthPx }: StudioPanelProps) {
                                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600" />
                                     </div>
                                 ) : displayHistory!.length === 0 ? (
-                                    <p className="text-xs text-slate-400 text-center py-6">Chưa tạo công cụ nào cho sách này.</p>
+                                    <p className="text-xs text-slate-400 text-center py-6">Chưa tạo công cụ nào cho giáo trình này.</p>
                                 ) : (
                                     <div className="space-y-1.5">
                                         {displayHistory!.map((item) => {

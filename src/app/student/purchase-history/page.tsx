@@ -57,12 +57,6 @@ export default function PurchaseHistoryPage() {
   return (
     <StudentShell>
       <div className="space-y-6 pb-10">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
-            Đơn hàng &amp; thanh toán
-          </h1>
-        </div>
-
         <div className="flex flex-wrap gap-2">
           {TABS.map((tab) => (
             <button

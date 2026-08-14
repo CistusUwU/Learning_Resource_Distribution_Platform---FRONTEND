@@ -6,6 +6,8 @@ import BookRecordTable from '@components/staff/book-record-table'
 import Pagination from '@components/pagination'
 import { staffService } from '@services/staff.service'
 import type { StaffBook, BookApprovalStatus } from '@app-types/book.type'
+import CreateBookModal from '@components/staff/book-form-modal'
+import BookFormModal from '@components/staff/book-form-modal'
 
 const TABS: { label: string; value: BookApprovalStatus | 'ALL' }[] = [
   { label: 'Tất cả', value: 'ALL' },
@@ -27,6 +29,8 @@ export default function StaffBooksPage() {
   const [page, setPage] = useState(1)
   const [submittingId, setSubmittingId] = useState<number | null>(null)
   const [reasonBook, setReasonBook] = useState<StaffBook | null>(null)
+  const [modalBook, setModalBook] = useState<StaffBook | 'new' | null>(null)
+  const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {
     async function fetchBooks() {
@@ -42,17 +46,24 @@ export default function StaffBooksPage() {
         setTotalPages(data.totalPages)
       } catch (err) {
         console.error(err)
-        setError('Không thể tải danh sách sách. Vui lòng thử lại.')
+        setError('Không thể tải danh sách giáo trình. Vui lòng thử lại.')
       } finally {
         setLoading(false)
       }
     }
     fetchBooks()
-  }, [page, activeTab])
+  }, [page, activeTab, refreshKey])
 
   function handleTabChange(tab: BookApprovalStatus | 'ALL') {
     setActiveTab(tab)
     setPage(1)
+  }
+
+  function handleBookSaved() {
+    setModalBook(null)
+    setActiveTab('ALL')
+    setPage(1)
+    setRefreshKey((k) => k + 1)
   }
 
   async function handleSubmit(bookId: number) {
@@ -86,13 +97,6 @@ export default function StaffBooksPage() {
   return (
     <>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-text">Quản lý sách</h1>
-          <p className="text-sm text-text-secondary mt-1">
-            Quản lý, chỉnh sửa và theo dõi trạng thái các tài liệu học tập của bạn.
-          </p>
-        </div>
-
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex gap-2 flex-wrap">
             {TABS.map((tab) => (
@@ -108,11 +112,10 @@ export default function StaffBooksPage() {
             ))}
           </div>
           <button
-            disabled
-            title="Sắp ra mắt"
-            className="inline-flex items-center gap-2 rounded-radius-md bg-primary text-white text-sm font-bold px-4 py-2 opacity-50 cursor-not-allowed whitespace-nowrap"
+            onClick={() => setModalBook('new')}
+            className="inline-flex items-center gap-2 rounded-radius-md bg-primary text-white text-sm font-bold px-4 py-2 hover:bg-primary-hover transition-colors whitespace-nowrap"
           >
-            + Tạo sách mới
+            + Tạo giáo trình mới
           </button>
         </div>
 
@@ -130,20 +133,20 @@ export default function StaffBooksPage() {
 
         {!loading && !error && books.length === 0 && activeTab === 'ALL' && (
           <div className="bg-surface rounded-radius-lg border border-border text-center py-12">
-            <p className="font-semibold text-text">Bạn chưa có sách nào</p>
+            <p className="font-semibold text-text">Bạn chưa có giáo trình nào</p>
             <p className="text-sm text-text-secondary mt-1">Thêm tài liệu đầu tiên để bắt đầu xây dựng thư viện học tập của bạn.</p>
           </div>
         )}
 
         {!loading && !error && books.length === 0 && activeTab !== 'ALL' && (
           <div className="bg-surface rounded-radius-lg border border-border text-center py-12">
-            <p className="font-semibold text-text">Không có sách ở trạng thái này</p>
-            <p className="text-sm text-text-secondary mt-1">Hãy thử chọn trạng thái khác để xem sách.</p>
+            <p className="font-semibold text-text">Không có giáo trình ở trạng thái này</p>
+            <p className="text-sm text-text-secondary mt-1">Hãy thử chọn trạng thái khác để xem giáo trình.</p>
             <button
               onClick={() => handleTabChange('ALL')}
               className="mt-3 rounded-radius-md border border-border px-4 py-2 text-sm font-semibold text-text hover:bg-border/30"
             >
-              Xem tất cả sách
+              Xem tất cả giáo trình
             </button>
           </div>
         )}
@@ -160,6 +163,14 @@ export default function StaffBooksPage() {
                   >
                     Xem trước
                   </Link>
+                  {(book.approval_status === 'DRAFT' || book.approval_status === 'UPDATE_REQUIRED') && (
+                    <button
+                      onClick={() => setModalBook(book)}
+                      className="inline-flex items-center rounded-radius-md border border-border px-3 py-1.5 text-xs font-semibold text-text hover:bg-border/30 transition-colors"
+                    >
+                      Sửa
+                    </button>
+                  )}
                   {(book.approval_status === 'DRAFT' || book.approval_status === 'UPDATE_REQUIRED') && (
                     <button
                       onClick={() => handleSubmit(book.book_id)}
@@ -216,6 +227,14 @@ export default function StaffBooksPage() {
             </button>
           </div>
         </div>
+      )}
+
+      {modalBook && (
+        <BookFormModal
+          book={modalBook === 'new' ? undefined : modalBook}
+          onClose={() => setModalBook(null)}
+          onSaved={handleBookSaved}
+        />
       )}
     </>
   )

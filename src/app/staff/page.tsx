@@ -66,7 +66,7 @@ export default function StaffHomePage() {
         ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-sm p-6">
-                    <p className="text-sm font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Tổng sách</p>
+                    <p className="text-sm font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Tổng giáo trình</p>
                     <p className="mt-3 text-4xl font-extrabold text-slate-900 dark:text-slate-100">{total}</p>
                 </div>
                 <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-sm p-6">

@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from "@providers/auth-provider";
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { ReactNode, useEffect, useState } from "react";
 import { studentNavItems } from "@layouts/app-sidebar/student-nav-items";
 import { AppSidebar } from "@layouts/app-sidebar/app-sidebar";
@@ -9,9 +9,26 @@ import { useSidebarCollapsed } from "@hooks/use-sidebar-collapsed";
 import { useOrders } from "@providers/orders-provider";
 import { useCart } from "@providers/cart-provider";
 import { HeaderUserActions } from "@components/header-user-actions";
+import type { NavItem } from "@app-types/nav.type";
+
+const EXTRA_TITLES: Record<string, string> = {
+    '/student/cart': 'Giỏ hàng',
+}
+
+function getActiveLabel(navItems: NavItem[], pathname: string): string {
+    if (EXTRA_TITLES[pathname]) return EXTRA_TITLES[pathname]
+
+    const sorted = [...navItems].sort((a, b) => b.path.length - a.path.length)
+    const match = sorted.find((item) => {
+        const isRoot = item.path === '/staff' || item.path === '/student'
+        return isRoot ? pathname === item.path : pathname === item.path || pathname.startsWith(item.path + '/')
+    })
+    return match?.label ?? ''
+}
 
 export default function StudentShell({ children }: { children: ReactNode}) {
     const router = useRouter()
+    const pathname = usePathname()
     const { user, isAuthenticated, loading, logout } = useAuth()
     const { count: cartCount } = useCart()
     const { pendingCount } = useOrders()
@@ -48,6 +65,8 @@ export default function StudentShell({ children }: { children: ReactNode}) {
         : item
     )
 
+    const pageTitle = getActiveLabel(studentNavItems, pathname)
+
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 flex">
             <AppSidebar
@@ -59,6 +78,10 @@ export default function StudentShell({ children }: { children: ReactNode}) {
 
             <div className={`flex-1 flex flex-col transition-all duration-200 ${collapsed ? 'ml-20' : 'ml-64'}`}>
             <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center gap-4 px-6 sticky top-0 z-40 shadow-sm">
+                    <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap shrink-0">
+                        {pageTitle}
+                    </h1>
+
                     <form onSubmit={handleSearchSubmit} className="flex-1 max-w-md">
                         <div className="relative">
                             <input

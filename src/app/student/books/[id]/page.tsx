@@ -51,7 +51,7 @@ export default function StudentBookPage() {
         let cancelled = false
 
         if (isNaN(bookId) || bookId <= 0) {
-            setError('Sách không hợp lệ')
+            setError('Giáo trình không hợp lệ')
             setLoading(false)
             return
         }
@@ -62,7 +62,7 @@ export default function StudentBookPage() {
             })
             .catch((err) => {
                 console.error(err)
-                if (!cancelled) setError('Không tải được thông tin sách')
+                if (!cancelled) setError('Không tải được thông tin giáo trình')
             })
             .finally(() => {
                 if (!cancelled) setLoading(false)
@@ -129,14 +129,14 @@ export default function StudentBookPage() {
                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-8 text-center">
                     <p className="text-red-700 dark:text-red-300 font-semibold mb-4">{error}</p>
                     <Link href="/student/my-books" className="text-blue-600 hover:underline font-semibold">
-                        Quay lại Sách của tôi
+                        Quay lại Giáo trình của tôi
                     </Link>
                 </div>
             </div>
         )
     }
 
-    const titleShort = bookTitle && bookTitle.length > 56 ? `${bookTitle.slice(0, 54)}…` : bookTitle || `Sách #${bookId}`
+    const titleShort = bookTitle && bookTitle.length > 56 ? `${bookTitle.slice(0, 54)}…` : bookTitle || `Giáo trình #${bookId}`
 
     return (
         <div className="flex flex-col h-screen bg-slate-50 dark:bg-slate-950">
@@ -145,7 +145,7 @@ export default function StudentBookPage() {
                     href="/student/my-books"
                     className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-blue-600 font-semibold text-sm shrink-0"
                 >
-                    ← <span className="hidden sm:inline">Sách của tôi</span>
+                    ← <span className="hidden sm:inline">Giáo trình của tôi</span>
                 </Link>
                 <div className="h-6 w-px bg-slate-200 dark:bg-slate-700 shrink-0" aria-hidden />
                 <h1 className="flex-1 min-w-0 text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate">

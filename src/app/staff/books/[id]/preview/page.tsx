@@ -24,7 +24,7 @@ export default function StaffBookPreviewPage() {
         let cancelled = false
 
         if (isNaN(bookId) || bookId <= 0) {
-            setError('Sách không hợp lệ')
+            setError('Giáo trình không hợp lệ')
             setLoading(false)
             return
         }
@@ -35,7 +35,7 @@ export default function StaffBookPreviewPage() {
             })
             .catch((err) => {
                 console.error(err)
-                if (!cancelled) setError('Không tải được thông tin sách')
+                if (!cancelled) setError('Không tải được thông tin giáo trình')
             })
             .finally(() => {
                 if (!cancelled) setLoading(false)
@@ -66,14 +66,14 @@ export default function StaffBookPreviewPage() {
                 <div className="bg-surface border border-border rounded-radius-lg p-8 text-center">
                     <p className="text-error font-semibold mb-4">{error}</p>
                     <Link href="/staff/books" className="text-primary hover:underline font-semibold">
-                        Quay lại Quản lý sách
+                        Quay lại Quản lý giáo trình
                     </Link>
                 </div>
             </div>
         )
     }
 
-    const titleShort = bookTitle && bookTitle.length > 56 ? `${bookTitle.slice(0, 54)}…` : bookTitle || `Sách #${bookId}`
+    const titleShort = bookTitle && bookTitle.length > 56 ? `${bookTitle.slice(0, 54)}…` : bookTitle || `Giáo Trình #${bookId}`
 
     return (
         <div className="flex flex-col h-[calc(100vh-8rem)] bg-background rounded-radius-lg border border-border overflow-hidden">
@@ -82,7 +82,7 @@ export default function StaffBookPreviewPage() {
                     href="/staff/books"
                     className="flex items-center gap-1.5 text-text-secondary hover:text-primary font-semibold text-sm shrink-0"
                 >
-                    ← <span className="hidden sm:inline">Quản lý sách</span>
+                    ← <span className="hidden sm:inline">Quản lý giáo trình</span>
                 </Link>
                 <div className="h-6 w-px bg-border shrink-0" aria-hidden />
                 <h1 className="flex-1 min-w-0 text-sm sm:text-base font-bold text-text truncate">

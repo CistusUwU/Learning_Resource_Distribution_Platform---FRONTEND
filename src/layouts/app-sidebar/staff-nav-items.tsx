@@ -12,28 +12,10 @@ export const staffNavItems: NavItem[] = [
     },
     {
         path: '/staff/books',
-        label: 'Sách của tôi',
+        label: 'Giáo trình của tôi',
         icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M6 14h10M6 18h8" />
-            </svg>
-        ),
-    },
-    {
-        path: '/staff/revenue',
-        label: 'Doanh thu của tôi',
-        icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-2.21 0-4 1.343-4 3s1.79 3 4 3 4 1.343 4 3-1.79 3-4 3m0-12c2.21 0 4-1.343 4-3s-1.79-3-4-3-4 1.343-4 3 1.79 3 4 3z" />
-            </svg>
-        ),
-    },
-    {
-        path: '/staff/analytics',
-        label: 'Thống kê',
-        icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19V6m4 13V10M7 19v-6M5 21h14" />
             </svg>
         ),
     },

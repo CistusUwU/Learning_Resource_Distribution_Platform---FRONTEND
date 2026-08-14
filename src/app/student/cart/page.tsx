@@ -190,15 +190,14 @@ export default function CartPage() {
             {!checkoutLoading && status === 'success' && items.length > 0 && (
                 <div className="max-w-6xl mx-auto">
                     <div className="mb-6">
-                        <h1 className="text-2xl font-bold">Giỏ hàng của bạn</h1>
-                        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                            {items.length} đầu sách trong giỏ · {validItems.length} hợp lệ
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                            {items.length} giáo trình trong giỏ · {validItems.length} hợp lệ
                         </p>
                     </div>
 
                     {removedCount > 0 && (
                         <div className="mb-4 p-3 rounded bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 text-sm">
-                            {removedCount} sách không còn khả dụng và đã được loại khỏi giỏ hàng.
+                            {removedCount} giáo trình không còn khả dụng và đã được loại khỏi giỏ hàng.
                         </div>
                     )}
 
@@ -326,8 +325,8 @@ export default function CartPage() {
                                 <h3 className="font-bold mb-4">Thông tin đơn hàng</h3>
 
                                 <div className="flex justify-between items-baseline text-sm text-slate-500 dark:text-slate-400 mb-4">
-                                    <span>Số sách thanh toán</span>
-                                    <span>{selectedValidItems.length} sách</span>
+                                    <span>Số giáo trình thanh toán</span>
+                                    <span>{selectedValidItems.length} giáo trình</span>
                                 </div>
 
                                 <div className="border-t border-dashed border-slate-300 dark:border-slate-600 my-4" />
@@ -337,7 +336,7 @@ export default function CartPage() {
                                     <span className="text-xl font-bold">{formatCurrency(total)}</span>
                                 </div>
                                 <p className="text-xs text-slate-400 dark:text-slate-500 mb-5">
-                                    Sách sẽ có trong "Sách của tôi" ngay sau khi thanh toán thành công.
+                                Giáo trình sẽ có trong "Giáo trình của tôi" ngay sau khi thanh toán thành công.
                                 </p>
 
                                 {checkoutError && (
@@ -350,7 +349,7 @@ export default function CartPage() {
                                     disabled={selectedValidItems.length === 0 || checkoutLoading}
                                     className="w-full py-3 rounded bg-orange-600 text-white font-semibold disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed"
                                 >
-                                    {checkoutLoading ? 'Đang xử lý...' : selectedValidItems.length === 0 ? 'Chưa chọn sách nào để thanh toán' : 'Tiến hành thanh toán'}
+                                    {checkoutLoading ? 'Đang xử lý...' : selectedValidItems.length === 0 ? 'Chưa chọn giáo trình nào để thanh toán' : 'Tiến hành thanh toán'}
                                 </button>
                             </div>
                         </aside>

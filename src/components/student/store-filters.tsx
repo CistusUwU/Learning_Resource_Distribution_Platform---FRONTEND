@@ -48,10 +48,10 @@ export default function StoreFilters({
                 value={categoryId ?? ''}
                 onChange={(value) => onChange({ categoryId: value ? Number(value) : undefined })}
             >
-                <option value="">Danh mục</option>
+                <option value="">Ngành</option>
                 {categories.map((cat) => (
                     <option key={cat.major_id} value={cat.major_id}>
-                        {cat.major_name} ({cat._count.book_major})
+                        {cat.major_name}
                     </option>
                 ))}
             </StoreFilterSelect>

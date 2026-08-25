@@ -152,7 +152,7 @@ export default function BookFormModal({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-text mb-1">Mô tả (không bắt buộc)</label>
+            <label className="block text-sm font-semibold text-text mb-1">Mô tả</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -211,7 +211,7 @@ export default function BookFormModal({
                 setMajorDropdownOpen(true)
               }}
               onFocus={() => setMajorDropdownOpen(true)}
-              placeholder="Gõ để tìm ngành..."
+              placeholder="Tìm ngành..."
               className="w-full rounded-radius-md border border-border px-3 py-2 text-sm bg-background text-text"
             />
 

@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import BookCover from '@components/book-cover'
 import type { LibraryItem } from '@app-types/library.type'
-import { formatDate } from '@utils/date'
 
 export default function BookCard({ item }: { item: LibraryItem }) {
   return (
@@ -20,9 +19,6 @@ export default function BookCard({ item }: { item: LibraryItem }) {
         <h3 className="font-bold text-slate-900 dark:text-slate-100 line-clamp-2">
           {item.book.title}
         </h3>
-        <p className="mt-3 text-xs text-slate-400 dark:text-slate-500">
-          Mua {formatDate(item.purchased_date)}
-        </p>
       </div>
     </Link>
   )

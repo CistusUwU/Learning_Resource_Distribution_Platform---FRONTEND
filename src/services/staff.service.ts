@@ -1,6 +1,7 @@
 import axiosInstance from "@lib/axios";
 import type { StaffBook, BookApprovalStatus } from "@app-types/book.type";
 import type { PaginatedResponse } from "@app-types/pagination.type";
+import { MyRevenueData } from "@app-types/revenue.type";
 
 export class StaffService {
     async getMyBooks(params: { page?: number; limit?: number; status?: BookApprovalStatus }): Promise<PaginatedResponse<StaffBook>> {
@@ -57,6 +58,11 @@ export class StaffService {
         const { data } = await axiosInstance.post('/staff/upload/cover', formData, {
             headers: { 'Content-Type': undefined },
         })
+        return data
+    }
+
+    async getMyRevenue(): Promise<MyRevenueData> {
+        const { data } = await axiosInstance.get<MyRevenueData>('/staff/revenue')
         return data
     }
 }

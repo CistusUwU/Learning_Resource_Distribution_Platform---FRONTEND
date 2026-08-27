@@ -2,6 +2,7 @@ import { Order } from "@app-types/order.type"
 import { getCheckoutPath } from "@utils/checkout"
 
 import { formatTime } from "@utils/date"
+import type { BadgeTone } from '@components/ui/badge'
 
 export function formatOrderStatus(status: string): string {
     if (status === 'COMPLETED') return 'Đã thanh toán'
@@ -29,3 +30,10 @@ export function toNotification(o: Order): NotificationItem {
         time: formatTime(o.created_at),
     }
 }
+
+export function orderStatusToTone(status: Order['status']): BadgeTone {
+    if (status === 'COMPLETED') return 'success'
+    if (status === 'PENDING') return 'warning'
+    if (status === 'CANCELLED') return 'error'
+    return 'neutral'
+  }

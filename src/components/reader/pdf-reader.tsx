@@ -19,12 +19,13 @@ interface PdfReaderProps {
     onToggleStudio: () => void
     initialPage?: number
     onPageChange?: (page: number) => void
+    showStudioToggle?: boolean
 }
 
 const WINDOW_SIZE = 10
 const SCROLL_THROTTLE_MS = 100
 
-export function PdfReader({ data, studioCollapsed, onToggleStudio, initialPage, onPageChange }: PdfReaderProps) {
+export function PdfReader({ data, studioCollapsed, onToggleStudio, initialPage, onPageChange, showStudioToggle }: PdfReaderProps) {
     const [readingMode, setReadingMode] = useState<'book' | 'scroll'>('book')
     const [currentPage, setCurrentPage] = useState(initialPage && initialPage > 0 ? initialPage : 1)
     const [numPages, setNumPages] = useState(0)
@@ -111,6 +112,7 @@ export function PdfReader({ data, studioCollapsed, onToggleStudio, initialPage, 
                 onZoomIn={zoomIn}
                 studioCollapsed={studioCollapsed}
                 onToggleStudio={onToggleStudio}
+                showStudioToggle={showStudioToggle}
             />
 
             <div

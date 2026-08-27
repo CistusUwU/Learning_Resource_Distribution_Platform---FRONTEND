@@ -84,12 +84,6 @@ export default function StoreBookCard({ book, layout }: { book: StoreBook; layou
                     <p className="mt-2 font-semibold">{formatCurrency(book.price)}</p>
                 </div>
                 <div className="flex flex-col gap-2 justify-center flex-shrink-0 w-40">
-                    <Link
-                        href={`/student/store/${book.book_id}`}
-                        className="py-2 px-4 rounded border border-slate-300 dark:border-slate-600 text-sm font-semibold text-center whitespace-nowrap"
-                    >
-                        Xem chi tiết
-                    </Link>
                     {renderActionButton('w-full')}
                 </div>
             </div>
@@ -114,12 +108,6 @@ export default function StoreBookCard({ book, layout }: { book: StoreBook; layou
                 <p className="mt-1 font-semibold">{formatCurrency(book.price)}</p>
             </Link>
             <div className="mt-2 flex gap-2">
-                <Link
-                    href={`/student/store/${book.book_id}`}
-                    className="flex-1 py-2 rounded border border-slate-300 dark:border-slate-600 text-sm font-semibold text-center"
-                >
-                    Xem chi tiết
-                </Link>
                 {renderActionButton('flex-1')}
             </div>
         </div>

@@ -1,29 +1,18 @@
-import { staffNavItems } from "@layouts/app-sidebar/staff-nav-items";
 import type { NavItem } from "@app-types/nav.type";
 
-
-
-
 export const adminNavItems: NavItem[] = [
-  ...staffNavItems,
   {
-    path: '/staff/library',
-    label: 'Thư viện chung',
+    path: '/staff',
+    label: 'Tổng quan',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3 7l9-4 9 4-9 4-9-4zm0
-           6l9 4 9-4"
-        />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
       </svg>
     ),
   },
   {
     path: '/staff/admin/approvals',
-    label: 'Duyệt sách',
+    label: 'Quản lý giáo trình',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -38,58 +27,12 @@ export const adminNavItems: NavItem[] = [
     ),
   },
   {
-    path: '/staff/admin/transactions',
-    label: 'Sao kê GD',
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 8h14M5 16h10" />
-      </svg>
-    ),
-  },
-  {
     path: '/staff/admin/revenue',
-    label: 'Phân chia DT',
+    label: 'Doanh thu',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19V6m4 13V10M7 19v-6" />
-      </svg>
-    ),
-  },
-  {
-    path: '/staff/admin/tags',
-    label: 'Nhãn',
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h10M7 12h6M7 17h4" />
-      </svg>
-    ),
-  },
-  {
-    path: '/staff/admin/staff',
-    label: 'Quyền giảng viên',
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M17 20v-2a4 4 0
-           00-4-4H7a4 4 0
-           00-4 4v2m14-10a4 4 0
-           11-8 0 4 4 0 018 0zm5
-           10v-2a3 3 0 00-2-2.816"
-        />
-      </svg>
-    ),
-  },
-  {
-    path: '/staff/admin/logs',
-    label: 'Nhật ký',
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h8M8 11h5M5 5h14v14H5z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 2v8m0 0v2m0-2c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
   },
 ];
-

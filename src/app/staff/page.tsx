@@ -1,93 +1,232 @@
 'use client'
 
-import { useAuth } from "@providers/auth-provider";
-import { staffService } from "@services/staff.service";
-import { adminService } from "@services/admin.service"
-import type { StaffBook } from "@app-types/book.type";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react"
+import Link from "next/link"
+import { Clock, Wallet, CircleDollarSign, FileEdit, CheckCircle2, XCircle, ChevronRight } from "lucide-react"
+import { useAuth } from "@providers/auth-provider"
+import { dashboardService } from "@services/dashboard.service"
+import type { AdminDashboardData, StaffDashboardData, RevenueTrendPoint } from "@app-types/dashboard.type"
+import { formatCurrency } from "@utils/currency"
+import RevenueTrendChart from "@components/admin/revenue-trend-chart"
 
-export default function StaffHomePage() {
-  const { user } = useAuth()
-  const [books, setBooks] = useState<StaffBook[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [pendingCount, setPendingCount] = useState<number>(0)
-
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const data = await staffService.getMyBooks()
-        setBooks(data)
-        if (user?.role === 'ADMIN') {
-          const count = await adminService.getPendingBooksCount()
-          setPendingCount(count)
-        }
-      } catch {
-        setError('Không thể tải dữ liệu. Vui lòng thử lại.')
-      } finally {
-        setLoading(false)
-      }
+function KpiCard({
+    icon,
+    tone,
+    label,
+    value,
+}: {
+    icon: ReactNode
+    tone: 'warning' | 'success' | 'primary'
+    label: string
+    value: string
+}) {
+    const toneClasses: Record<typeof tone, string> = {
+        warning: 'bg-warning/10 text-warning',
+        success: 'bg-success/10 text-success',
+        primary: 'bg-primary/10 text-primary',
     }
-    fetchBooks()
-  }, [])
 
-  const total = books.length
-  const approved = books.filter(b => b.approval_status === 'APPROVED').length
-  const pending = books.filter(b => b.approval_status === 'PENDING').length
-  const draft = books.filter(b => b.approval_status === 'DRAFT').length
-
-  return (
-    <div className="space-y-8 pb-10">
-        <div className="rounded-[2.5rem] bg-white dark:bg-[#0F172A] dark:bg-slate-800/80 relative overflow-hidden p-10 border border-slate-350 dark:border-slate-800">
-            <div className="absolute top-[-10%] right-[-10%] w-[520px] h-[520px] bg-blue-600/20 rounded-full blur-3xl" />
-            <div className="absolute bottom-[-10%] left-[-10%] w-[420px] h-[420px] bg-indigo-600/20 rounded-full blur-3xl" />
-            <div className="relative z-10">
-                <p className="text-sm font-bold text-slate-400">Chào mừng quay lại</p>
-                <h1 className="mt-2 text-5xl font-extrabold leading-tight text-white">
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
-                        {user?.full_name}
-                    </span>
-                </h1>
-                <p className="mt-3 text-slate-400 text-lg leading-relaxed max-w-2xl">
-                    Tải lên và quản lý giáo trình, kiểm soát phạm vi hiển thị và theo dõi quy trình duyệt.
-                </p>
+    return (
+        <div className="bg-surface border border-border rounded-radius-lg p-5 flex items-center gap-4">
+            <div className={`w-11 h-11 rounded-radius-md flex items-center justify-center shrink-0 ${toneClasses[tone]}`}>
+                {icon}
+            </div>
+            <div className="min-w-0">
+                <p className="text-sm text-text-secondary">{label}</p>
+                <p className="text-2xl font-bold text-text mt-0.5 truncate">{value}</p>
             </div>
         </div>
+    )
+}
 
-        {error && (
-            <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm font-semibold">
-                {error}
+function ListRow({
+    icon,
+    tone,
+    title,
+    subtitle,
+    count,
+}: {
+    icon: ReactNode
+    tone: 'warning' | 'success' | 'error' | 'neutral'
+    title: string
+    subtitle: string
+    count: number
+}) {
+    const toneClasses: Record<typeof tone, string> = {
+        warning: 'bg-warning/10 text-warning',
+        success: 'bg-success/10 text-success',
+        error: 'bg-error/10 text-error',
+        neutral: 'bg-border text-text-secondary',
+    }
+
+    return (
+        <div className="flex items-center gap-3 py-3">
+            <div className={`w-9 h-9 rounded-radius-md flex items-center justify-center shrink-0 ${toneClasses[tone]}`}>
+                {icon}
             </div>
-        )}
+            <div className="min-w-0 flex-1">
+                <p className="font-semibold text-sm text-text">{title}</p>
+                <p className="text-xs text-text-secondary">{subtitle}</p>
+            </div>
+            <span className="font-bold text-text shrink-0">{count}</span>
+        </div>
+    )
+}
 
-        {loading ? (
-            <div className="text-center py-16 text-slate-600 dark:text-slate-400 font-semibold">Đang tải...</div>
-        ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-sm p-6">
-                    <p className="text-sm font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Tổng sách</p>
-                    <p className="mt-3 text-4xl font-extrabold text-slate-900 dark:text-slate-100">{total}</p>
+export default function StaffHomePage() {
+    const { user } = useAuth()
+    const [adminData, setAdminData] = useState<AdminDashboardData | null>(null)
+    const [staffData, setStaffData] = useState<StaffDashboardData | null>(null)
+    const [revenueTrend, setRevenueTrend] = useState<RevenueTrendPoint[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+
+    useEffect(() => {
+        if (!user) return
+
+        async function fetchData() {
+            try {
+                setLoading(true)
+                setError(null)
+                if (user!.role === 'ADMIN') {
+                    const [admin, staff, trend] = await Promise.all([
+                        dashboardService.getAdminDashboard(),
+                        dashboardService.getStaffDashboard(),
+                        dashboardService.getAdminRevenueTrend(),
+                    ])
+                    setAdminData(admin)
+                    setStaffData(staff)
+                    setRevenueTrend(trend)
+                } else {
+                    const staff = await dashboardService.getStaffDashboard()
+                    setStaffData(staff)
+                }
+            } catch (err) {
+                console.error(err)
+                setError('Không thể tải dữ liệu. Vui lòng thử lại.')
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchData()
+    }, [user])
+
+    const isAdmin = user?.role === 'ADMIN'
+
+    return (
+        <div className="space-y-8 pb-10">
+            {error && (
+                <div className="p-4 rounded-radius-lg bg-error/10 border border-error text-error text-sm font-semibold">
+                    {error}
                 </div>
-                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-sm p-6">
-                    <p className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Đã duyệt</p>
-                    <p className="mt-3 text-4xl font-extrabold text-slate-900 dark:text-slate-100">{approved}</p>
-                </div>
-                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-sm p-6">
-                    <p className="text-sm font-extrabold text-amber-600 dark:text-amber-400 uppercase tracking-widest">Chờ duyệt</p>
-                    <p className="mt-3 text-4xl font-extrabold text-slate-900 dark:text-slate-100">{pending}</p>
-                </div>
-                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-sm p-6">
-                    <p className="text-sm font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Bản nháp</p>
-                    <p className="mt-3 text-4xl font-extrabold text-slate-900 dark:text-slate-100">{draft}</p>
-                </div>
-                {user?.role === 'ADMIN' && (
-                    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-sm p-6">
-                        <p className="text-sm font-extrabold text-red-600 dark:text-red-400 uppercase tracking-widest">Chờ duyệt toàn hệ thống</p>
-                        <p className="mt-3 text-4xl font-extrabold text-slate-900 dark:text-slate-100">{pendingCount}</p>
+            )}
+
+            {loading && (
+                <div className="text-center py-16 text-text-secondary font-semibold">Đang tải...</div>
+            )}
+
+            {!loading && !error && isAdmin && adminData && (
+                <section className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <KpiCard
+                            icon={<Clock size={20} />}
+                            tone="warning"
+                            label="Chờ duyệt"
+                            value={String(adminData.pending_books)}
+                        />
+                        <KpiCard
+                            icon={<Wallet size={20} />}
+                            tone="success"
+                            label="Doanh thu tháng này"
+                            value={formatCurrency(adminData.monthly_revenue)}
+                        />
+                        <KpiCard
+                            icon={<CircleDollarSign size={20} />}
+                            tone="warning"
+                            label="Chưa được chi trả"
+                            value={formatCurrency(adminData.unpaid_revenue)}
+                        />
                     </div>
-                )}
-            </div>
-        )}
-    </div>
-  )
+
+                    {adminData.pending_books > 0 && (
+                        <div className="bg-surface border border-border rounded-radius-lg p-5">
+                            <h2 className="font-bold text-text mb-1">Cần xử lý</h2>
+                            <div className="divide-y divide-border">
+                                <ListRow
+                                    icon={<Clock size={18} />}
+                                    tone="warning"
+                                    title="Giáo trình chờ duyệt"
+                                    subtitle="Cần bạn phê duyệt"
+                                    count={adminData.pending_books}
+                                />
+                            </div>
+                            <Link
+                                href="/staff/admin/approvals"
+                                className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+                            >
+                                Xử lý ngay <ChevronRight size={14} />
+                            </Link>
+                        </div>
+                    )}
+
+                    {revenueTrend.length > 0 && <RevenueTrendChart data={revenueTrend} />}
+                </section>
+            )}
+
+            {!loading && !error && staffData && (
+                <section className="bg-surface border border-border rounded-radius-lg p-5 space-y-1">
+                    <h2 className="font-bold text-text mb-1">
+                        {isAdmin ? 'Công việc của tôi' : 'Tình hình giáo trình của tôi'}
+                    </h2>
+                    <div className="divide-y divide-border">
+                        <ListRow
+                            icon={<FileEdit size={18} />}
+                            tone="neutral"
+                            title="Bản nháp"
+                            subtitle="Bạn đang soạn thảo"
+                            count={staffData.books.draft}
+                        />
+                        <ListRow
+                            icon={<Clock size={18} />}
+                            tone="warning"
+                            title="Chờ duyệt"
+                            subtitle="Đang chờ admin phê duyệt"
+                            count={staffData.books.pending}
+                        />
+                        <ListRow
+                            icon={<CheckCircle2 size={18} />}
+                            tone="success"
+                            title="Đã duyệt"
+                            subtitle="Đã được phê duyệt"
+                            count={staffData.books.approved}
+                        />
+                        <ListRow
+                            icon={<XCircle size={18} />}
+                            tone="error"
+                            title="Bị từ chối"
+                            subtitle="Cần bạn chỉnh sửa lại"
+                            count={staffData.books.rejected}
+                        />
+                    </div>
+
+                    {!isAdmin && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                            <KpiCard
+                                icon={<Wallet size={20} />}
+                                tone="success"
+                                label="Doanh thu tháng này"
+                                value={formatCurrency(staffData.monthly_revenue)}
+                            />
+                            <KpiCard
+                                icon={<CircleDollarSign size={20} />}
+                                tone="warning"
+                                label="Chưa thanh toán"
+                                value={formatCurrency(staffData.unpaid_revenue)}
+                            />
+                        </div>
+                    )}
+                </section>
+            )}
+        </div>
+    )
 }

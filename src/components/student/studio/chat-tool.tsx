@@ -48,7 +48,7 @@ export function ChatTool({ bookId, messages, onMessagesChange }: ChatToolProps) 
         <div className="flex flex-col h-full min-h-0">
             <div className="flex-1 min-h-0 overflow-y-auto space-y-2 pb-2">
                 {messages.length === 0 && (
-                    <p className="text-sm text-slate-500 text-center py-8">Đặt câu hỏi về nội dung sách.</p>
+                    <p className="text-sm text-slate-500 text-center py-8">Đặt câu hỏi về nội dung giáo trình.</p>
                 )}
                 {messages.map((m, idx) => (
                     <div

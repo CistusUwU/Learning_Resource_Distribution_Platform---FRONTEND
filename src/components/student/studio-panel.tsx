@@ -62,9 +62,10 @@ export function StudioPanel({ bookId, collapsed, widthPx }: StudioPanelProps) {
             .then((items) => {
                 const hasAutoFlashcard = items.some((i) => i.type === 'flashcard' && i.isAuto)
                 const hasAutoQuiz = items.some((i) => i.type === 'quiz' && i.isAuto)
+                const hasMindmap = items.some((i) => i.type === 'mindmap')
                 if (!hasAutoFlashcard) handleGenerate('flashcard', true)
-                    if (!hasAutoQuiz) handleGenerate('quiz', true)
-                    handleGenerate('mindmap', true)
+                if (!hasAutoQuiz) handleGenerate('quiz', true)
+                if (!hasMindmap) handleGenerate('mindmap', true)
             })
             .catch((err) => {
                 console.error(err)
@@ -142,9 +143,8 @@ export function StudioPanel({ bookId, collapsed, widthPx }: StudioPanelProps) {
         ? { width: 0, minWidth: 0, opacity: 0, pointerEvents: 'none' as const }
         : { width: widthPx, minWidth: 400, maxWidth: 640, opacity: 1, pointerEvents: 'auto' as const }
 
-    const visibleHistory = history?.filter((item) => item.type !== 'mindmap') ?? null
+    const visibleHistory = history ?? null
     const pendingItems = Array.from(generatingTypes)
-        .filter((type) => type !== 'mindmap')
         .map((type) => ({
             id: `__pending__${type}`,
             type,
@@ -205,7 +205,7 @@ export function StudioPanel({ bookId, collapsed, widthPx }: StudioPanelProps) {
                                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600" />
                                     </div>
                                 ) : displayHistory!.length === 0 ? (
-                                    <p className="text-xs text-slate-400 text-center py-6">Chưa tạo công cụ nào cho sách này.</p>
+                                    <p className="text-xs text-slate-400 text-center py-6">Chưa tạo công cụ nào cho giáo trình này.</p>
                                 ) : (
                                     <div className="space-y-1.5">
                                         {displayHistory!.map((item) => {

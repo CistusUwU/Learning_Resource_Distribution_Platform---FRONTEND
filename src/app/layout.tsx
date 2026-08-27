@@ -1,20 +1,13 @@
 import { AuthProvider } from '@providers/auth-provider'
 
-import localFont from 'next/font/local'
+import { Inter } from 'next/font/google'
 import type { Metadata } from 'next'
 import '@app/globals.css'
 import { ThemeProvider } from '@providers/theme-provider'
 
-const geistSans = localFont({
-  src: './fonts/GeistVF.woff',
+const inter = Inter({
+  subsets: ['latin', 'vietnamese'],
   variable: '--font-geist-sans',
-  weight: '100 900',
-})
-
-const geistMono = localFont({
-  src: './fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-  weight: '100 900',
 })
 
 export const metadata: Metadata = {
@@ -27,7 +20,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="vi" suppressHydrationWarning>
-      <body className = {`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className = {`${inter.variable} antialiased`}>
         <ThemeProvider>
           <AuthProvider>
             {children}

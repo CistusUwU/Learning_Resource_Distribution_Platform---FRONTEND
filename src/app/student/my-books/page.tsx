@@ -34,7 +34,7 @@ export default function MyBooksPage() {
       <div className="space-y-6 pb-10">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
-            Sách của tôi
+            Giáo trình của tôi
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
             Giáo trình bạn đã mua và có thể đọc
@@ -59,16 +59,16 @@ export default function MyBooksPage() {
         {!loading && !error && items.length === 0 && (
           <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-16 text-center">
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-              Chưa có sách nào
+              Chưa có giáo trình nào
             </h2>
             <p className="text-slate-500 dark:text-slate-400 mb-6 max-w-md mx-auto">
-              Mua sách từ thư viện để bắt đầu đọc và học tập.
+              Mua giáo trình từ cửa hàng để bắt đầu đọc và học tập.
             </p>
             <Link
               href="/student/store"
               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-lg transition-all active:scale-95"
             >
-              Khám phá thư viện
+              Khám phá cửa hàng
             </Link>
           </div>
         )}
@@ -76,7 +76,7 @@ export default function MyBooksPage() {
         {!loading && !error && items.length > 0 && (
           <>
             <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-              {items.length} sách
+              {items.length} giáo trình
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {items.map((item) => (
